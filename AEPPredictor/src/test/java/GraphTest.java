@@ -1,9 +1,9 @@
-import pl.adeks.language.interpreter.Interpreter;
-import pl.adeks.language.interpreter.data.math.number.numbers.IntegerNumber;
-import pl.adeks.language.interpreter.data.types.variables.numeric.IntegerVariable;
-import pl.adeks.predictor.graph.expression.algebra.AlgebraicVertex;
-import pl.adeks.predictor.graph.expression.algebra.NumberVertex;
-import pl.adeks.predictor.graph.expression.algebra.VariableVertex;
+import pl.publicprojects.language.interpreter.Interpreter;
+import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.IntegerVariable;
+import pl.publicprojects.predictor.graph.expression.algebra.AlgebraicVertex;
+import pl.publicprojects.predictor.graph.expression.algebra.NumberVertex;
+import pl.publicprojects.predictor.graph.expression.algebra.VariableVertex;
 
 import java.io.IOException;
 

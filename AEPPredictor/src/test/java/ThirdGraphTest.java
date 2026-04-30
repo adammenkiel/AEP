@@ -1,9 +1,9 @@
-import pl.adeks.language.interpreter.Interpreter;
-import pl.adeks.language.interpreter.data.math.LanguageNumber;
-import pl.adeks.language.interpreter.data.math.number.numbers.DoubleNumber;
-import pl.adeks.language.interpreter.data.types.variables.numeric.DoubleVariable;
-import pl.adeks.predictor.graph.TreeVertex;
-import pl.adeks.predictor.graph.generator.ExpressGraphGenerator;
+import pl.publicprojects.language.interpreter.Interpreter;
+import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
+import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
+import pl.publicprojects.predictor.graph.TreeVertex;
+import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 
 import java.io.IOException;
 import java.util.HashMap;

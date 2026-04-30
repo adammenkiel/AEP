@@ -1,5 +1,4 @@
-import pl.adeks.language.interpreter.Interpreter;
-import pl.adeks.language.interpreter.data.math.number.AlgebraicExpressionManager;
+import pl.publicprojects.language.interpreter.Interpreter;
 
 import java.io.*;
 
