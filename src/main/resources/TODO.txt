@@ -1,0 +1,21 @@
+LIGHT IDEAS:
+TODO: Mogę oczyścić śmieciowe słowa np. to for itd by polepszyć metodę comparingu
+TODO: Badania nad alternatywnymi modelami
+TODO: Funkcje na oczyszczonych zdaniach
+TODO: Różne warianty różnych funkcji
+TODO: Model wirusowy
+
+
+SERIOUS IDEAS:
+TODO: ZROBIĆ GENETYCZNĄ WERSJĘ ZNAJDOWANIA POPRAWNEGO WYNIKU
+TODO: ZAMKNĄĆ INTERPRETER
+TODO: DODAĆ MAXIMUM, MINIMUM
+TODO: DODAĆ FUNKCJĘ DECYZJI exp1 > 0 ? exp2 : exp3
+
+MAYBE SERIOUS IDEAS:
+TODO: MODEL GRAPH
+TODO: UPROSZCZANIE WYRAŻEŃ ALGEBRAICZNYCH
+
+
+NOWE:
+TODO: ZOPTYMALIZOWAĆ ALGORYTM
