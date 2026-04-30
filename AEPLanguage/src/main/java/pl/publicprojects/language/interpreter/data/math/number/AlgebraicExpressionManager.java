@@ -3,8 +3,6 @@ package pl.publicprojects.language.interpreter.data.math.number;
 import lombok.Getter;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
-import pl.adeks.language.interpreter.data.math.number.numbers.*;
-import pl.publicproject.language.interpreter.data.math.number.numbers.*;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.*;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.stream.LanguageInputStream;

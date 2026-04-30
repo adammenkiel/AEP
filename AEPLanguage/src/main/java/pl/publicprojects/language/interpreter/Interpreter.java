@@ -10,8 +10,6 @@ import pl.publicprojects.language.interpreter.data.types.ModifyVariableData;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.data.types.conditions.WhileData;
 import pl.publicprojects.language.interpreter.data.types.variables.bool.BooleanVariable;
-import pl.adeks.language.interpreter.data.types.variables.numeric.*;
-import pl.publicproject.language.interpreter.data.types.variables.numeric.*;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.*;
 import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 
