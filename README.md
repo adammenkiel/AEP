@@ -8,5 +8,6 @@ Examples can be found in `src/main`.
 You can use `src/main/java/pl/publicprojects/predictor/basic/RefactorClass.java` to merge result group of expressions into one expression.
 
 ## Effect:
-<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/73642460-92bd-447d-b6fb-0aeaccfad34e" />
+<img width="500" height="500" alt="image" src="https://github.com/user-attachments/assets/037db835-c455-4646-92ad-c6825ecd2386" />
+
 
