@@ -16,7 +16,7 @@ public class DataContainer {
     private final ProxyDataContainer proxyDataContainer;
 
     private boolean freezeValues = true;
-    private final List<LanguageNumber<?>> freezedValues = new ArrayList<>();
+    private final List<LanguageNumber<?>> frozenValues = new ArrayList<>();
 
     public DataContainer(LanguageNumber<?>[] rawData, ProxyDataContainer proxyDataContainer) {
         this.rawData = rawData;
@@ -42,6 +42,7 @@ public class DataContainer {
         return this.rawData.length + this.proxyDataContainer.getExpressionList().size();
     }
 
+
     public void update(List<VariableData> variables) throws IOException {
         this.rawUpdate(variables);
         while(this.getSize() - 1 > variables.size()) {
@@ -58,13 +59,14 @@ public class DataContainer {
                 variables.get(i).setValue(this.proxyDataContainer.getValue(this, proxyIndex));
             }
         } else {
-            while(this.proxyDataContainer.getExpressionList().size() > this.freezedValues.size()) {
-                this.freezedValues.add(this.proxyDataContainer.getValue(this, this.freezedValues.size()));
+            while(this.proxyDataContainer.getExpressionList().size() > this.frozenValues.size()) {
+                var val = this.proxyDataContainer.getValue(this, this.frozenValues.size());
+                this.frozenValues.add(val);
             }
 
             for(int i = rawData.length - 1; i < this.getSize() - 1; i++) {
                 int proxyIndex = i - this.rawData.length + 1;
-                variables.get(i).setValue(this.freezedValues.get(proxyIndex));
+                variables.get(i).setValue(this.frozenValues.get(proxyIndex));
             }
         }
         /*

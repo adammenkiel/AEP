@@ -45,9 +45,6 @@ public class ExpressGraphGenerator {
 
     private TreeVertex draw() {
         int a = random.nextInt(100);
-        if(this.variablesAmount == 1) {
-            System.out.println("lol!" + this.variablesAmount);
-        }
 
         int chanceOne = vertexChance;
         int chanceTwo = (100 - chanceOne) / 2;

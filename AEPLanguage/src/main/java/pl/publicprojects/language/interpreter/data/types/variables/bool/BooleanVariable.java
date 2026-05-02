@@ -11,7 +11,6 @@ public class BooleanVariable extends VariableData {
 
     @Override
     public void execute() {
-        System.out.println("put");
         Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
     }
 

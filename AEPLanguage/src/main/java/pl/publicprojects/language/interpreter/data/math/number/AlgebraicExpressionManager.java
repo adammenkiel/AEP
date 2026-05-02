@@ -64,10 +64,10 @@ public class AlgebraicExpressionManager {
             numberFirst = this.getLangNumberByID(numberType);
             numberFirst.read(lNumberStream);
         } else if(typeId == 1) {
-            int nameId = languageInputStream.readInt(); // id zmiennej
+            int nameId = languageInputStream.readInt(); // variable id
             VariableData currentVariable = this.interpreter.getCurrentVariableByNameId(nameId);
             if(currentVariable == null) {
-                System.out.println("Null!!! " + nameId);
+                System.out.println("Variable is null, nameId: " + nameId);
             }
             numberFirst = (LanguageNumber<?>)currentVariable.getValue();
         } else if(typeId == 2) {
