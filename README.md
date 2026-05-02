@@ -6,3 +6,7 @@ Examples can be found in `src/main`.
 
 ## Tip:
 You can use `src/main/java/pl/publicprojects/predictor/basic/RefactorClass.java` to merge result group of expressions into one expression.
+
+## Effect:
+<img width="721" height="723" alt="image" src="https://github.com/user-attachments/assets/73642460-92bd-447d-b6fb-0aeaccfad34e" />
+
