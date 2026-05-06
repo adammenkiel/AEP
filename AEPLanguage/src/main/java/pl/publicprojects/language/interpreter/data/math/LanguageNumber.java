@@ -7,6 +7,9 @@ import java.io.IOException;
 
 public abstract class LanguageNumber<T> {
 
+    /**
+     * @return Returns object integer value
+     */
     public abstract T getValue();
 
     public abstract LanguageNumber<?> plus(LanguageNumber<?> other);

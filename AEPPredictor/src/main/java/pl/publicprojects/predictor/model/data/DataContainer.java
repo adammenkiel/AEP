@@ -22,30 +22,30 @@ public class DataContainer {
     private boolean freezeValues = true;
     private final List<LanguageNumber<?>> frozenValues = new ArrayList<>();
 
-    /*
+    /**
     * @param rawData Standard dataSet that we load at the start
     * @param proxyDataContainer While model running, we can add new, good-scored expression for generating better results
-    * */
+    */
     public DataContainer(LanguageNumber<?>[] rawData, ProxyDataContainer proxyDataContainer) {
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
     }
 
-    /*
+    /**
     * @param rawData Standard dataSet that we load at the start
     * @param proxyDataContainer While model running, we can add new, good-scored expression for generating better results
     * @param freezeValues If freezeValues=true you can't update old proxyValues by very easy way
-    * */
+    */
     public DataContainer(LanguageNumber<?>[] rawData, ProxyDataContainer proxyDataContainer, boolean freezeValues) {
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
         this.freezeValues = freezeValues;
     }
 
-    /*
+    /**
     * Function for get data with fixed index.
     * @param index that you data want to load
-    * */
+    */
     public LanguageNumber<?> get(int index) throws IOException {
         if(index < this.rawData.length) {
             return this.rawData[index];
@@ -55,18 +55,18 @@ public class DataContainer {
         return this.proxyDataContainer.getValue(this, proxyIndex);
     }
 
-    /*
+    /**
     * Total size (with proxied data)
-    * */
+    */
     public int getSize() {
         return this.rawData.length + this.proxyDataContainer.getExpressionList().size();
     }
 
-    /*
+    /**
     * I could make it more optimal yet
     * When I have a freeze mode I can load only variables that I need to use
     * or create something like proxy variable
-    * */
+    */
     public void update(List<VariableData> variables) throws IOException {
         this.rawUpdate(variables);
         while(this.getSize() - 1 > variables.size()) {
@@ -95,10 +95,10 @@ public class DataContainer {
         }
     }
 
-    /*
+    /**
     * Function for set values of variables into rawData values (just these variables responsible for rawData)
     * @param variables variables list
-    * */
+    */
     public void rawUpdate(List<VariableData> variables) throws IOException {
         for(int i = 0; i < rawData.length - 1; i++) {
             variables.get(i).setValue(rawData[i + 1]);
