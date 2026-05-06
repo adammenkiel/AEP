@@ -20,7 +20,7 @@ public class PoolESClusterTest {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        PoolESModel poolESModel = new PoolESModel(interpreter, container, 100, 10, false) {
+        PoolESModel poolESModel = new PoolESModel(interpreter, container, 400, 30, false) {
 
             private double max = 0;
 

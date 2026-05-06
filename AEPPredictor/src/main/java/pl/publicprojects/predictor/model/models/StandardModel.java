@@ -30,7 +30,7 @@ public abstract class StandardModel extends AbstractModel {
 
     public void search() throws IOException {
         int dataSize = rawData.getFirst().length - 1;
-        ExpressGraphGenerator generator = new ExpressGraphGenerator(30, 4, dataSize);
+        ExpressGraphGenerator generator = new ExpressGraphGenerator(30, 10, dataSize);
 
         for(int nameId = 0; nameId < dataSize; nameId++) {
             DoubleVariable variable = new DoubleVariable(nameId);

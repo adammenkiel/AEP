@@ -44,18 +44,7 @@ public class AlgebraicVertex extends TreeVertex {
             stream.writeInt(bytes.length);
             stream.write(bytes);
         } else stream.write(bytes);
-        /*if(typeId == 0) {
-            NumberVertex numberVert = (NumberVertex) vert;
-            stream.write(numberVert.visit());
-        }
-        if(typeId == 1) {
-            VariableVertex variableVert = (VariableVertex) vert;
-            stream.write(variableVert.visit());
-        }
-        if(typeId == 2) {
-            AlgebraicVertex algebraicVertex = (AlgebraicVertex) vert;
-            stream.write(algebraicVertex.visit());
-        }*/
+        
         return byteStream.toByteArray();
     }
 
