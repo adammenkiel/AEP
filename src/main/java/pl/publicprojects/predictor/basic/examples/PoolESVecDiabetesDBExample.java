@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic;
+package pl.publicprojects.predictor.basic.examples;
 
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -7,12 +7,13 @@ import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNu
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.DataContainer;
 import pl.publicprojects.predictor.model.data.ProxyDataContainer;
-import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
+import pl.publicprojects.predictor.model.models.PoolESVecModel;
+
 
 import java.io.File;
 import java.util.Scanner;
 
-public class GeneticDiabetesDBTest {
+public class PoolESVecDiabetesDBExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mathchi/diabetes-data-set";
 
@@ -21,7 +22,13 @@ public class GeneticDiabetesDBTest {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter) {
+        PoolESVecModel poolESVecModel = new PoolESVecModel(
+                interpreter,
+                container,
+                4000,
+                10,
+                false
+        ) {
 
             private double max = 0;
 
@@ -29,6 +36,10 @@ public class GeneticDiabetesDBTest {
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
+                /*System.out.println("Result: " +
+                        code.replace("$0$", "x")
+                                .replace("$1$", "y")
+                        + " grade: " + grade);*/
                 try {
                     if(grade > 0.1 && grade - this.max > 0.01) {
                         this.max = Math.max(this.max, grade);
@@ -71,13 +82,13 @@ public class GeneticDiabetesDBTest {
                     numberTable[7] = new DoubleNumber(a7);
                     numberTable[8] = new DoubleNumber(a8);
 
-                    super.getRawData().add(new DataContainer(numberTable, container));
+                    super.addData(new DataContainer(numberTable, container));
                 }
             }
         };
-        container.setVariables(standardModel.getVariables());
-        standardModel.loadData();
-        standardModel.search();
+        container.setVariables(poolESVecModel.getMainModel().getVariables());
+        poolESVecModel.loadData();
+        poolESVecModel.search();
 
     }
 }

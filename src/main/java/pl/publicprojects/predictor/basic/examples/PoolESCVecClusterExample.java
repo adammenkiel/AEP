@@ -1,42 +1,42 @@
-package pl.publicprojects.predictor.basic;
-
+package pl.publicprojects.predictor.basic.examples;
 
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
-import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.DataContainer;
 import pl.publicprojects.predictor.model.data.ProxyDataContainer;
-import pl.publicprojects.predictor.model.models.RegularPoolModel;
-
+import pl.publicprojects.predictor.model.models.PoolESVecModel;
 
 import java.io.File;
 import java.util.Scanner;
 
-public class RegularPartClusterTest {
+public class PoolESCVecClusterExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
 
+
     public static void main(String[] args) throws Exception {
 
-        System.out.println("Running...");
         Interpreter interpreter = new Interpreter();
         ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        RegularPoolModel regularModel = new RegularPoolModel(interpreter, 30) {
+        PoolESVecModel poolESModel = new PoolESVecModel(interpreter, container, 100, 10, false) {
+
+            private double max = 0;
 
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
-                System.out.println("Founded...");
                 String code = vertex.toString();
 
                 try {
-                    container.getExpressionList().add(vertex.visit());
-                    super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
-                    System.out.println("Grade: " + grade);
-                    System.out.println("$" + (this.getRawData().getFirst().getRawData().length + container.getExpressionList().size() - 2) +"$ = " + code + "");
-
+                    if(grade > 0.1 && grade - this.max > 0.001 ) {
+                        this.max = Math.max(this.max, grade);
+                        container.getExpressionList().add(vertex.visit());
+                        super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
+                        System.out.println("Grade: " + grade);
+                        System.out.println("$" + container.getVariables().size() +"$ = " + code + "");
+                    }
                 } catch (Exception ignored) {}
             }
 
@@ -57,13 +57,13 @@ public class RegularPartClusterTest {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.getRawData().add(new DataContainer(numberTable, container));
+                    super.addData(new DataContainer(numberTable, container));
                 }
             }
         };
-        container.setVariables(regularModel.getVariables());
-        regularModel.loadData();
-        regularModel.search();
+        container.setVariables(poolESModel.getMainModel().getVariables());
+        poolESModel.loadData();
+        poolESModel.search();
 
     }
 }

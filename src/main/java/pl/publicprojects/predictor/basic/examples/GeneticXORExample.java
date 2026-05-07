@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic;
+package pl.publicprojects.predictor.basic.examples;
 
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -12,9 +12,9 @@ import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import java.io.File;
 import java.util.Scanner;
 
-public class GeneticRandomTest {
+public class GeneticXORExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/random.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/tester.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -50,17 +50,12 @@ public class GeneticRandomTest {
                 Scanner scanner = new Scanner(file); // not optimal
                 while (scanner.hasNextLine()) {
                     String[] lineArgs = scanner.nextLine().split(" ");
-                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 9];
+                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 4];
 
                     double a1 = Double.parseDouble(lineArgs[1]);
                     double a2 = Double.parseDouble(lineArgs[2]);
                     double a3 = Double.parseDouble(lineArgs[3]);
                     double a4 = Double.parseDouble(lineArgs[4]);
-                    double a5 = Double.parseDouble(lineArgs[5]);
-                    double a6 = Double.parseDouble(lineArgs[6]);
-                    double a7 = Double.parseDouble(lineArgs[7]);
-                    double a8 = Double.parseDouble(lineArgs[8]);
-                    double a9 = Double.parseDouble(lineArgs[9]);
 
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
 
@@ -68,13 +63,6 @@ public class GeneticRandomTest {
                     numberTable[2] = new DoubleNumber(a2);
                     numberTable[3] = new DoubleNumber(a3);
                     numberTable[4] = new DoubleNumber(a4);
-                    numberTable[5] = new DoubleNumber(a5);
-                    numberTable[6] = new DoubleNumber(a6);
-                    numberTable[7] = new DoubleNumber(a7);
-                    numberTable[8] = new DoubleNumber(a8);
-                    numberTable[9] = new DoubleNumber(a9);
-
-
 
                     super.getRawData().add(new DataContainer(numberTable, container));
                 }

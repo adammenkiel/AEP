@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic;
+package pl.publicprojects.predictor.basic.examples;
 
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -7,28 +7,20 @@ import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNu
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.DataContainer;
 import pl.publicprojects.predictor.model.data.ProxyDataContainer;
-import pl.publicprojects.predictor.model.models.PoolESVecModel;
-
+import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 
 import java.io.File;
 import java.util.Scanner;
 
-public class PoolESVecDiabetesDBTest {
+public class GeneticRandomExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mathchi/diabetes-data-set";
-
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/random.txt";
 
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        PoolESVecModel poolESVecModel = new PoolESVecModel(
-                interpreter,
-                container,
-                4000,
-                10,
-                false
-        ) {
+        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter) {
 
             private double max = 0;
 
@@ -36,31 +28,29 @@ public class PoolESVecDiabetesDBTest {
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
-                /*System.out.println("Result: " +
-                        code.replace("$0$", "x")
-                                .replace("$1$", "y")
-                        + " grade: " + grade);*/
                 try {
-                    if(grade > 0.1 && grade - this.max > 0.01) {
+                    if (grade > 0.1 && grade - this.max > 0.01) {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
                         System.out.println("Grade: " + grade);
-                        System.out.println("$" + container.getVariables().size() +"$ = " + code);
+                        System.out.println("$" + container.getVariables().size() + "$ = " + code);
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
+            }
 
             @Override
             public void loadData() throws Exception {
                 File file = new File(DEFAULT_SIMPLE_TEST_FILE);
                 Scanner scanner = new Scanner(file); // not optimal
-                while(scanner.hasNextLine()) {
+                while (scanner.hasNextLine()) {
                     String[] lineArgs = scanner.nextLine().split(" ");
-                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 8];
+                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 9];
 
                     double a1 = Double.parseDouble(lineArgs[1]);
                     double a2 = Double.parseDouble(lineArgs[2]);
@@ -70,6 +60,7 @@ public class PoolESVecDiabetesDBTest {
                     double a6 = Double.parseDouble(lineArgs[6]);
                     double a7 = Double.parseDouble(lineArgs[7]);
                     double a8 = Double.parseDouble(lineArgs[8]);
+                    double a9 = Double.parseDouble(lineArgs[9]);
 
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
 
@@ -81,14 +72,17 @@ public class PoolESVecDiabetesDBTest {
                     numberTable[6] = new DoubleNumber(a6);
                     numberTable[7] = new DoubleNumber(a7);
                     numberTable[8] = new DoubleNumber(a8);
+                    numberTable[9] = new DoubleNumber(a9);
 
-                    super.addData(new DataContainer(numberTable, container));
+
+
+                    super.getRawData().add(new DataContainer(numberTable, container));
                 }
             }
         };
-        container.setVariables(poolESVecModel.getMainModel().getVariables());
-        poolESVecModel.loadData();
-        poolESVecModel.search();
+        container.setVariables(standardModel.getVariables());
+        standardModel.loadData();
+        standardModel.search();
 
     }
 }

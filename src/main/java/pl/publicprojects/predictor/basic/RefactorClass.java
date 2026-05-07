@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * When you run model from <code>/examples</code> folder, you can put output here and write <code>end</code>, expressions from output will be converted into one expression
+ * Next you can copy it and replace <code>$0$, $1$, ..., $n$</code> into variable names like in <code>/results</code> folder
+ * Sometimes expressions could look complicated, we don't simplify it because when we use it freeze setting
+ * We don't need to calculate it every time when we use it as data like in <code>PoolESModel</code> and models like it
+ * In the future I will do experiment with simplify methods, surely it should be calculated for good-graded results.
+ */
 public class RefactorClass {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);

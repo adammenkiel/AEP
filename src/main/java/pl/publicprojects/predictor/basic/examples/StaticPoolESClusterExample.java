@@ -1,5 +1,4 @@
-package pl.publicprojects.predictor.basic;
-
+package pl.publicprojects.predictor.basic.examples;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
@@ -7,12 +6,12 @@ import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNu
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.DataContainer;
 import pl.publicprojects.predictor.model.data.ProxyDataContainer;
-import pl.publicprojects.predictor.model.models.PoolESVecModel;
+import pl.publicprojects.predictor.model.models.StaticPoolESModel;
 
 import java.io.File;
 import java.util.Scanner;
 
-public class PoolESCVecClusterTest {
+public class StaticPoolESClusterExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
 
@@ -21,7 +20,7 @@ public class PoolESCVecClusterTest {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        PoolESVecModel poolESModel = new PoolESVecModel(interpreter, container, 100, 10, false) {
+        StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter, container, 10, 0.3) {
 
             private double max = 0;
 
@@ -67,3 +66,4 @@ public class PoolESCVecClusterTest {
 
     }
 }
+

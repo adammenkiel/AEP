@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic;
+package pl.publicprojects.predictor.basic.examples;
 
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -7,21 +7,20 @@ import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNu
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.DataContainer;
 import pl.publicprojects.predictor.model.data.ProxyDataContainer;
-import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
-
+import pl.publicprojects.predictor.model.models.PoolESModel;
 
 import java.io.File;
 import java.util.Scanner;
 
-public class GeneticClusterTest {
+public class PoolESClusterExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/wynik.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
 
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter) {
+        PoolESModel poolESModel = new PoolESModel(interpreter, container, 400, 30, false) {
 
             private double max = 0;
 
@@ -29,10 +28,6 @@ public class GeneticClusterTest {
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
-                /*System.out.println("Result: " +
-                        code.replace("$0$", "x")
-                                .replace("$1$", "y")
-                        + " grade: " + grade);*/
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
                         this.max = Math.max(this.max, grade);
@@ -61,13 +56,13 @@ public class GeneticClusterTest {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.getRawData().add(new DataContainer(numberTable, container));
+                    super.addData(new DataContainer(numberTable, container));
                 }
             }
         };
-        container.setVariables(standardModel.getVariables());
-        standardModel.loadData();
-        standardModel.search();
+        container.setVariables(poolESModel.getMainModel().getVariables());
+        poolESModel.loadData();
+        poolESModel.search();
 
     }
 }
