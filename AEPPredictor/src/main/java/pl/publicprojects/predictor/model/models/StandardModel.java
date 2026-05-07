@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public abstract class StandardModel extends AbstractModel {
+public abstract class StandardModel implements AbstractModel {
 
     private final Interpreter interpreter;
     private final List<LanguageNumber<?>[]> rawData = new ArrayList<>();

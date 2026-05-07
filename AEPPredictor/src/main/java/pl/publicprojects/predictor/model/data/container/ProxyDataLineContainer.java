@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.model.data;
+package pl.publicprojects.predictor.model.data.container;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class ProxyDataContainer {
+public class ProxyDataLineContainer {
 
     private final Interpreter interpreter;
     /**
@@ -26,7 +26,7 @@ public class ProxyDataContainer {
     @Setter
     private List<VariableData> variables;
 
-    public ProxyDataContainer(Interpreter interpreter) {
+    public ProxyDataLineContainer(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
 
@@ -35,7 +35,7 @@ public class ProxyDataContainer {
     *
     * @param index That's index of expressions list
     */
-    public LanguageNumber<?> getValue(DataContainer container, int index) throws IOException {
+    public LanguageNumber<?> getValue(int index) throws IOException {
         byte[] expression = expressionList.get(index);
 
         double resultDoubleValue = (double) interpreter.getAlgebraicExpressionManager()

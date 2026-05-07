@@ -3,19 +3,20 @@ package pl.publicprojects.predictor.model.models;
 import lombok.Getter;
 import lombok.Setter;
 import pl.publicprojects.language.interpreter.Interpreter;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.DataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
 import java.io.IOException;
 
 @Getter
-public abstract class PoolESModel extends AbstractModel {
+public abstract class PoolESModel implements AbstractModel {
 
     private final Interpreter interpreter;
-    private final ProxyDataContainer proxyDataContainer;
+    private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
     private final StandardModel helpfulModel;
     private final long qualityTime;
@@ -30,7 +31,7 @@ public abstract class PoolESModel extends AbstractModel {
     @Setter
     private boolean search = true;
 
-    public PoolESModel(Interpreter interpreter, ProxyDataContainer proxyDataContainer, long qualityTime, int amount, boolean minTime) {
+    public PoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, long qualityTime, int amount, boolean minTime) {
         this.proxyDataContainer = proxyDataContainer;
         this.interpreter = interpreter;
         this.qualityTime = qualityTime;
@@ -84,6 +85,11 @@ public abstract class PoolESModel extends AbstractModel {
 
             @Override
             public void loadData() throws Exception {}
+
+            @Override
+            public void createVariables(int dataSize) {
+                PoolESModel.this.createVariables(this, dataSize);
+            }
         };
     }
 
@@ -108,7 +114,15 @@ public abstract class PoolESModel extends AbstractModel {
         throw new RuntimeException("Unsupported function!");
     }
 
-    public void addData(DataContainer data) {
+    public void createVariables(ExpressionStandardModel model, int dataSize) {
+        for(int nameId = 0; nameId < dataSize; nameId++) {
+            DoubleVariable variable = new DoubleVariable(nameId);
+            variable.execute();
+            model.getVariables().add(variable);
+        }
+    }
+
+    public void addData(DataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
         this.getMainModel().getRawData().add(data);
         this.getHelpfulModel().getRawData().add(data.getRawData());

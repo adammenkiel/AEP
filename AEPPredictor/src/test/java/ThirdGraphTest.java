@@ -155,7 +155,6 @@ public class ThirdGraphTest {
             //}
             iter++;
         }
-        //System.out.println(result.replaceAll("\\$0\\$", "x"));
 
     }
 

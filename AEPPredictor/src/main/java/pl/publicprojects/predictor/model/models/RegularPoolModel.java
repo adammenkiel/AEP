@@ -9,14 +9,14 @@ import pl.publicprojects.language.interpreter.data.types.variables.numeric.Doubl
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
-import pl.publicprojects.predictor.model.data.DataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public abstract class RegularPoolModel extends AbstractModel {
+public abstract class RegularPoolModel implements AbstractModel {
 
     private record SimpleResultContainer(byte[] bytes, double result, TreeVertex graph) {
         private SimpleResultContainer(byte[] bytes, double result, TreeVertex graph) {
@@ -28,7 +28,7 @@ public abstract class RegularPoolModel extends AbstractModel {
 
     private final int partAmount;
     private final Interpreter interpreter;
-    private final List<DataContainer> rawData = new ArrayList<>();
+    private final List<StandardDataLineContainer> rawData = new ArrayList<>();
     private final List<VariableData> variables = new ArrayList<>();
     private final List<SimpleResultContainer> analysedResults = new ArrayList<>();
     private ExpressGraphGenerator generator;
@@ -90,7 +90,7 @@ public abstract class RegularPoolModel extends AbstractModel {
         int general = 0;
 
         boolean isCorrect = true;
-        for(DataContainer info : this.rawData) {
+        for(StandardDataLineContainer info : this.rawData) {
             boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
 
             info.update(this.getVariables());

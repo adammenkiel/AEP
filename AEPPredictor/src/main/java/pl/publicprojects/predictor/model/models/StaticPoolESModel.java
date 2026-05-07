@@ -6,16 +6,16 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
 import java.io.IOException;
 
 @Getter
-public abstract class StaticPoolESModel extends AbstractModel {
+public abstract class StaticPoolESModel implements AbstractModel {
 
     private final Interpreter interpreter;
-    private final ProxyDataContainer proxyDataContainer;
+    private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
     private final StandardModel helpfulModel;
     private final int amount;
@@ -27,7 +27,7 @@ public abstract class StaticPoolESModel extends AbstractModel {
     @Setter
     private boolean search = true;
 
-    public StaticPoolESModel(Interpreter interpreter, ProxyDataContainer proxyDataContainer, int amount, double gradeResult) {
+    public StaticPoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, int amount, double gradeResult) {
         this.proxyDataContainer = proxyDataContainer;
         this.interpreter = interpreter;
         this.amount = amount;
@@ -41,7 +41,7 @@ public abstract class StaticPoolESModel extends AbstractModel {
             public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
                 if(grade >= gradeResult) {
                     proxyDataContainer.getExpressionList().add(bytes);
-                    //mainModel.getGenerator().setVariablesAmount(mainModel.getGenerator().getVariablesAmount() + 1);
+
                     int size = proxyDataContainer.getExpressionList().size();
                     System.out.println("Found expression " + size + " / " + amount);
                     System.out.println("$" + (size + rawDataTableSize) + "$ = " +vertex.toString());
@@ -94,7 +94,7 @@ public abstract class StaticPoolESModel extends AbstractModel {
         throw new RuntimeException("Unsupported function!");
     }
 
-    public void addData(DataContainer data) {
+    public void addData(StandardDataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
         this.getMainModel().getRawData().add(data);
         this.getHelpfulModel().getRawData().add(data.getRawData());

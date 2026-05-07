@@ -9,17 +9,17 @@ import pl.publicprojects.language.interpreter.data.types.variables.numeric.Doubl
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
-import pl.publicprojects.predictor.model.data.DataContainer;
+import pl.publicprojects.predictor.model.data.DataLineContainer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public abstract class ExpressionStandardModel extends AbstractModel {
+public abstract class ExpressionStandardModel implements AbstractModel {
 
     private final Interpreter interpreter;
-    private final List<DataContainer> rawData = new ArrayList<>();
+    private final List<DataLineContainer> rawData = new ArrayList<>();
     private final List<VariableData> variables = new ArrayList<>();
     private ExpressGraphGenerator generator;
 
@@ -30,16 +30,19 @@ public abstract class ExpressionStandardModel extends AbstractModel {
         this.interpreter = interpreter;
     }
 
-    public void search() throws IOException {
-        int dataSize = rawData.getFirst().getSize() - 1;
-        System.out.println("DATA SIZE: " + dataSize);
-        this.generator = new ExpressGraphGenerator(30, 4, dataSize);
-
+    public void createVariables(int dataSize) {
         for(int nameId = 0; nameId < dataSize; nameId++) {
             DoubleVariable variable = new DoubleVariable(nameId);
             variable.execute();
             this.variables.add(variable);
         }
+    }
+
+    public void search() throws IOException {
+        int dataSize = rawData.getFirst().getSize() - 1;
+        System.out.println("DATA SIZE: " + dataSize);
+        this.generator = new ExpressGraphGenerator(30, 4, dataSize);
+        this.createVariables(dataSize);
 
         long time = System.currentTimeMillis();
         double maxResult = 0;
@@ -68,7 +71,7 @@ public abstract class ExpressionStandardModel extends AbstractModel {
         int general = 0;
 
         boolean isCorrect = true;
-        for(DataContainer info : this.rawData) {
+        for(DataLineContainer info : this.rawData) {
             boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
 
             info.update(this.getVariables());

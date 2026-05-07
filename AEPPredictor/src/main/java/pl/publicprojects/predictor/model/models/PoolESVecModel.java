@@ -6,16 +6,16 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
 import java.io.IOException;
 
 @Getter
-public abstract class PoolESVecModel extends AbstractModel {
+public abstract class PoolESVecModel implements AbstractModel {
 
     private final Interpreter interpreter;
-    private final ProxyDataContainer proxyDataContainer;
+    private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
     private final ExpressionStandardModel helpfulModel;
     private final long qualityTime;
@@ -30,7 +30,7 @@ public abstract class PoolESVecModel extends AbstractModel {
     @Setter
     private boolean search = true;
 
-    public PoolESVecModel(Interpreter interpreter, ProxyDataContainer proxyDataContainer, long qualityTime, int amount, boolean minTime) {
+    public PoolESVecModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, long qualityTime, int amount, boolean minTime) {
         this.proxyDataContainer = proxyDataContainer;
         this.interpreter = interpreter;
         this.qualityTime = qualityTime;
@@ -107,7 +107,7 @@ public abstract class PoolESVecModel extends AbstractModel {
         throw new RuntimeException("Unsupported function!");
     }
 
-    public void addData(DataContainer data) {
+    public void addData(StandardDataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
         this.getMainModel().getRawData().add(data);
         this.getHelpfulModel().getRawData().add(data);
