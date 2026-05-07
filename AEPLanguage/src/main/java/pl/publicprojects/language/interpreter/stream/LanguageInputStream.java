@@ -9,9 +9,20 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class LanguageInputStream extends DataInputStream {
+
+
+    /**
+     * @param in Input Stream that we will work with.
+     */
     public LanguageInputStream(InputStream in) {
         super(in);
     }
+
+    /**
+     * Function for reading byte[] and parsing it into LanguageData that are commands for interpreter
+     *
+     * @return Returns LanguageData that we read
+     */
     public LanguageData readLanguageData() throws IOException {
         int id = this.readInt();
         int len = this.readInt();
@@ -28,6 +39,11 @@ public class LanguageInputStream extends DataInputStream {
         return lData;
     }
 
+    /**
+     * Read byte array as LanguageInputStream
+     *
+     * @return Returns LanguageInputStream, we can read sub instructions from it
+     */
     public LanguageInputStream readLInputStream() throws IOException {
         int len = this.readInt();
         byte[] bytes = new byte[len];
@@ -36,6 +52,9 @@ public class LanguageInputStream extends DataInputStream {
         return new LanguageInputStream(bytesStream);
     }
 
+    /**
+     * Debug function
+     */
     public String debugTable(byte[] bytes) {
         StringBuilder lol = new StringBuilder("{");
         for(byte b : bytes) {
@@ -45,6 +64,11 @@ public class LanguageInputStream extends DataInputStream {
         return lol.toString();
     }
 
+    /**
+     * Function for read byte[]
+     *
+     * @return array of bytes
+     */
     public byte[] readBytesTable() throws IOException {
         int len = this.readInt();
         byte[] bytes = new byte[len];

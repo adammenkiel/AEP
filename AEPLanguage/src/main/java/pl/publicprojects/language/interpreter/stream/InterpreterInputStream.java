@@ -5,6 +5,7 @@ import pl.publicprojects.language.interpreter.Interpreter;
 
 import java.io.InputStream;
 
+@Deprecated
 @Getter
 public class InterpreterInputStream extends LanguageInputStream{
 
