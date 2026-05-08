@@ -10,6 +10,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
 import pl.publicprojects.predictor.model.data.DataLineContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,30 +20,25 @@ import java.util.List;
 public abstract class ExpressionStandardModel implements AbstractModel {
 
     private final Interpreter interpreter;
-    private final List<DataLineContainer> rawData = new ArrayList<>();
-    private final List<VariableData> variables = new ArrayList<>();
+    private final TotalDataContainer totalDataContainer;
+    //private final List<DataLineContainer> rawData = new ArrayList<>();
+    private List<VariableData> variables = new ArrayList<>();
     private ExpressGraphGenerator generator;
 
     @Setter
     private boolean search = true;
 
-    public ExpressionStandardModel(Interpreter interpreter) {
+    public ExpressionStandardModel(Interpreter interpreter, TotalDataContainer totalDataContainer) {
+        this.totalDataContainer = totalDataContainer;
         this.interpreter = interpreter;
     }
 
-    public void createVariables(int dataSize) {
-        for(int nameId = 0; nameId < dataSize; nameId++) {
-            DoubleVariable variable = new DoubleVariable(nameId);
-            variable.execute();
-            this.variables.add(variable);
-        }
-    }
 
     public void search() throws IOException {
-        int dataSize = rawData.getFirst().getSize() - 1;
+        int dataSize = totalDataContainer.getRawData().getFirst().getSize() - 1;
         System.out.println("DATA SIZE: " + dataSize);
         this.generator = new ExpressGraphGenerator(30, 4, dataSize);
-        this.createVariables(dataSize);
+        this.variables.addAll(this.getTotalDataContainer().createVariables(dataSize));
 
         long time = System.currentTimeMillis();
         double maxResult = 0;
@@ -71,7 +67,7 @@ public abstract class ExpressionStandardModel implements AbstractModel {
         int general = 0;
 
         boolean isCorrect = true;
-        for(DataLineContainer info : this.rawData) {
+        for(DataLineContainer info : this.totalDataContainer.getRawData()) {
             boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
 
             info.update(this.getVariables());

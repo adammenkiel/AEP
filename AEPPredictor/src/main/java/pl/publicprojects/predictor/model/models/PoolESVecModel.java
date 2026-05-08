@@ -6,6 +6,7 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
@@ -15,6 +16,7 @@ import java.io.IOException;
 public abstract class PoolESVecModel implements AbstractModel {
 
     private final Interpreter interpreter;
+    private final TotalDataContainer totalDataContainer;
     private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
     private final ExpressionStandardModel helpfulModel;
@@ -30,15 +32,16 @@ public abstract class PoolESVecModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public PoolESVecModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, long qualityTime, int amount, boolean minTime) {
+    public PoolESVecModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, TotalDataContainer totalDataContainer, long qualityTime, int amount, boolean minTime) {
         this.proxyDataContainer = proxyDataContainer;
+        this.totalDataContainer = totalDataContainer;
         this.interpreter = interpreter;
         this.qualityTime = qualityTime;
         this.amount = amount;
         this.minTime = minTime;
 
 
-        this.helpfulModel = new ExpressionStandardModel(this.interpreter) {
+        this.helpfulModel = new ExpressionStandardModel(this.interpreter, this.totalDataContainer) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 if(!searching) return;
@@ -71,7 +74,7 @@ public abstract class PoolESVecModel implements AbstractModel {
             public void loadData() throws Exception {}
         };
 
-        this.mainModel = new ExpressionStandardModel(interpreter) {
+        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 model.foundResult(bytes, grade, vertex);
@@ -109,8 +112,8 @@ public abstract class PoolESVecModel implements AbstractModel {
 
     public void addData(StandardDataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
-        this.getMainModel().getRawData().add(data);
-        this.getHelpfulModel().getRawData().add(data);
+        this.getMainModel().getTotalDataContainer().getRawData().add(data);
+        this.getHelpfulModel().getTotalDataContainer().getRawData().add(data);
     }
 
     public ExpressGraphGenerator getGenerator() {

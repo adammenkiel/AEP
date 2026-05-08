@@ -29,10 +29,7 @@ public class RefactorClass {
 
             for(int j = i; j < lines.size(); j++) {
                 String[] foreign = lines.get(j);
-                //System.out.println("before" + foreign[1]);
-                //System.out.println(foreign[0] + " replaceAll " + vName );
                 foreign[1] = foreign[1].replace(vName, exp);
-                //System.out.println(foreign[1]);
             }
         }
         System.out.println(lines.getLast()[1]);

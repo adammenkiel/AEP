@@ -3,12 +3,17 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
+import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.StaticPoolESModel;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class StaticPoolESClusterExample {
@@ -19,8 +24,20 @@ public class StaticPoolESClusterExample {
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
-        ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter, container, 10, 0.3) {
+        ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
+        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+            @Override
+            public List<VariableData> createVariables(int dataSize) {
+                List<VariableData> list = new ArrayList<>();
+                for(int nameId = 0; nameId < dataSize; nameId++) {
+                    DoubleVariable variable = new DoubleVariable(nameId);
+                    variable.execute();
+                    list.add(variable);
+                }
+                return list;
+            }
+        };
+        StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter, container, totalDataContainer,10, 0.3) {
 
             private double max = 0;
 
@@ -56,7 +73,7 @@ public class StaticPoolESClusterExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.addData(new DataContainer(numberTable, container));
+                    super.addData(new StandardDataLineContainer(numberTable, container));
                 }
             }
         };

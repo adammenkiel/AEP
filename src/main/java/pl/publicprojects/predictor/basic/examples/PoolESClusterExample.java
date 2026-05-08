@@ -4,12 +4,17 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
+import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PoolESClusterExample {
@@ -19,8 +24,20 @@ public class PoolESClusterExample {
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
-        ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        PoolESModel poolESModel = new PoolESModel(interpreter, container, 400, 30, false) {
+        ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
+        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+            @Override
+            public List<VariableData> createVariables(int dataSize) {
+                List<VariableData> list = new ArrayList<>();
+                for(int nameId = 0; nameId < dataSize; nameId++) {
+                    DoubleVariable variable = new DoubleVariable(nameId);
+                    variable.execute();
+                    list.add(variable);
+                }
+                return list;
+            }
+        };
+        PoolESModel poolESModel = new PoolESModel(interpreter, container, totalDataContainer, 100, 5, false) {
 
             private double max = 0;
 
@@ -56,7 +73,7 @@ public class PoolESClusterExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.addData(new DataContainer(numberTable, container));
+                    super.addData(new StandardDataLineContainer(numberTable, container));
                 }
             }
         };

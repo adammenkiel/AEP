@@ -10,34 +10,39 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
+import pl.publicprojects.predictor.model.data.lang.DataPointer;
+import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
+import pl.publicprojects.predictor.model.models.PoolESModel;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class GeneticXORExample {
+public class VirtualGeneticDiabetesDBExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/tester.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mathchi/diabetes-data-set";
 
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
+        DataPointer pointer = new DataPointer();
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    DoubleVariable variable = new DoubleVariable(nameId);
+                    VirtualVariable variable = new VirtualVariable(nameId, pointer);
                     variable.execute();
                     list.add(variable);
                 }
                 return list;
             }
         };
-        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter, totalDataContainer) {
+        PoolESModel standardModel = new PoolESModel(interpreter, container, totalDataContainer, 1000, 20, false) {
 
             private double max = 0;
 
@@ -46,33 +51,35 @@ public class GeneticXORExample {
                 String code = vertex.toString();
 
                 try {
-                    if (grade > 0.1 && grade - this.max > 0.01) {
+                    if(grade > 0.1 && grade - this.max > 0.01) {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
                         System.out.println("Grade: " + grade);
-                        System.out.println("$" + container.getVariables().size() + "$ = " + code);
+                        System.out.println("$" + container.getVariables().size() +"$ = " + code);
                     }
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
-            }
+            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
 
             @Override
             public void loadData() throws Exception {
                 File file = new File(DEFAULT_SIMPLE_TEST_FILE);
                 Scanner scanner = new Scanner(file); // not optimal
-                while (scanner.hasNextLine()) {
+                while(scanner.hasNextLine()) {
                     String[] lineArgs = scanner.nextLine().split(" ");
-                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 4];
+                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 8];
 
                     double a1 = Double.parseDouble(lineArgs[1]);
                     double a2 = Double.parseDouble(lineArgs[2]);
                     double a3 = Double.parseDouble(lineArgs[3]);
                     double a4 = Double.parseDouble(lineArgs[4]);
+                    double a5 = Double.parseDouble(lineArgs[5]);
+                    double a6 = Double.parseDouble(lineArgs[6]);
+                    double a7 = Double.parseDouble(lineArgs[7]);
+                    double a8 = Double.parseDouble(lineArgs[8]);
 
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
 
@@ -80,12 +87,17 @@ public class GeneticXORExample {
                     numberTable[2] = new DoubleNumber(a2);
                     numberTable[3] = new DoubleNumber(a3);
                     numberTable[4] = new DoubleNumber(a4);
+                    numberTable[5] = new DoubleNumber(a5);
+                    numberTable[6] = new DoubleNumber(a6);
+                    numberTable[7] = new DoubleNumber(a7);
+                    numberTable[8] = new DoubleNumber(a8);
 
-                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(numberTable, container));
+                    super.addData(new VirtualDataLineContainer(numberTable, container, pointer));
+                    //super.getTotalDataContainer().getRawData().add(new VirtualDataLineContainer(numberTable, container, pointer));
                 }
             }
         };
-        container.setVariables(standardModel.getVariables());
+        container.setVariables(standardModel.getMainModel().getVariables());
         standardModel.loadData();
         standardModel.search();
 

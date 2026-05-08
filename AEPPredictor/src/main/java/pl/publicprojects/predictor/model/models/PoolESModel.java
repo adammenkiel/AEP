@@ -8,6 +8,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
 import pl.publicprojects.predictor.model.data.DataLineContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ public abstract class PoolESModel implements AbstractModel {
     private final Interpreter interpreter;
     private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
+    private final TotalDataContainer totalDataContainer;
     private final StandardModel helpfulModel;
     private final long qualityTime;
     private final int amount;
@@ -31,8 +33,9 @@ public abstract class PoolESModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public PoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, long qualityTime, int amount, boolean minTime) {
+    public PoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, TotalDataContainer totalDataContainer, long qualityTime, int amount, boolean minTime) {
         this.proxyDataContainer = proxyDataContainer;
+        this.totalDataContainer = totalDataContainer;
         this.interpreter = interpreter;
         this.qualityTime = qualityTime;
         this.amount = amount;
@@ -72,7 +75,7 @@ public abstract class PoolESModel implements AbstractModel {
             public void loadData() throws Exception {}
         };
 
-        this.mainModel = new ExpressionStandardModel(interpreter) {
+        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 model.foundResult(bytes, grade, vertex);
@@ -86,10 +89,6 @@ public abstract class PoolESModel implements AbstractModel {
             @Override
             public void loadData() throws Exception {}
 
-            @Override
-            public void createVariables(int dataSize) {
-                PoolESModel.this.createVariables(this, dataSize);
-            }
         };
     }
 
@@ -114,17 +113,9 @@ public abstract class PoolESModel implements AbstractModel {
         throw new RuntimeException("Unsupported function!");
     }
 
-    public void createVariables(ExpressionStandardModel model, int dataSize) {
-        for(int nameId = 0; nameId < dataSize; nameId++) {
-            DoubleVariable variable = new DoubleVariable(nameId);
-            variable.execute();
-            model.getVariables().add(variable);
-        }
-    }
-
     public void addData(DataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
-        this.getMainModel().getRawData().add(data);
+        this.getMainModel().getTotalDataContainer().getRawData().add(data);
         this.getHelpfulModel().getRawData().add(data.getRawData());
     }
 

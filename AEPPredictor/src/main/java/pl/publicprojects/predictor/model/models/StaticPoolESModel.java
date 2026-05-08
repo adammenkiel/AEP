@@ -6,6 +6,7 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
@@ -16,6 +17,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
 
     private final Interpreter interpreter;
     private final ProxyDataLineContainer proxyDataContainer;
+    private final TotalDataContainer totalDataContainer;
     private final ExpressionStandardModel mainModel;
     private final StandardModel helpfulModel;
     private final int amount;
@@ -27,8 +29,9 @@ public abstract class StaticPoolESModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public StaticPoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, int amount, double gradeResult) {
+    public StaticPoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, TotalDataContainer totalDataContainer, int amount, double gradeResult) {
         this.proxyDataContainer = proxyDataContainer;
+        this.totalDataContainer = totalDataContainer;
         this.interpreter = interpreter;
         this.amount = amount;
         this.gradeResult = gradeResult;
@@ -57,7 +60,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
             public void loadData() throws Exception {}
         };
 
-        this.mainModel = new ExpressionStandardModel(interpreter) {
+        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 model.foundResult(bytes, grade, vertex);
@@ -96,7 +99,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
 
     public void addData(StandardDataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
-        this.getMainModel().getRawData().add(data);
+        this.getMainModel().getTotalDataContainer().getRawData().add(data);
         this.getHelpfulModel().getRawData().add(data.getRawData());
     }
 

@@ -6,8 +6,8 @@ import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.predictor.graph.TreeVertex;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.RegularPoolModel;
 
 
@@ -22,7 +22,7 @@ public class RegularPartClusterExample {
 
         System.out.println("Running...");
         Interpreter interpreter = new Interpreter();
-        ProxyDataContainer container = new ProxyDataContainer(interpreter);
+        ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         RegularPoolModel regularModel = new RegularPoolModel(interpreter, 30) {
 
             @Override
@@ -56,7 +56,7 @@ public class RegularPartClusterExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.getRawData().add(new DataContainer(numberTable, container));
+                    super.getRawData().add(new StandardDataLineContainer(numberTable, container));
                 }
             }
         };

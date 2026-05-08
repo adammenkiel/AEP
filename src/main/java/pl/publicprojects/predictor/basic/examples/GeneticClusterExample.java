@@ -4,13 +4,18 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
+import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
-import pl.publicprojects.predictor.model.data.DataContainer;
-import pl.publicprojects.predictor.model.data.ProxyDataContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class GeneticClusterExample {
@@ -20,8 +25,20 @@ public class GeneticClusterExample {
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
-        ProxyDataContainer container = new ProxyDataContainer(interpreter);
-        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter) {
+        ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
+        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+            @Override
+            public List<VariableData> createVariables(int dataSize) {
+                List<VariableData> list = new ArrayList<>();
+                for(int nameId = 0; nameId < dataSize; nameId++) {
+                    DoubleVariable variable = new DoubleVariable(nameId);
+                    variable.execute();
+                    list.add(variable);
+                }
+                return list;
+            }
+        };
+        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter, totalDataContainer) {
 
             private double max = 0;
 
@@ -61,7 +78,7 @@ public class GeneticClusterExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.getRawData().add(new DataContainer(numberTable, container));
+                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(numberTable, container));
                 }
             }
         };
