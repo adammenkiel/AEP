@@ -42,4 +42,9 @@ public class NumberVertex extends TreeVertex {
     public String toString() {
         return this.number.getValue().toString();
     }
+
+    @Override
+    public LanguageNumber<?> getValue() {
+        return this.number;
+    }
 }

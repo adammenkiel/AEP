@@ -12,6 +12,7 @@ import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 
 import java.io.IOException;
 
+@Deprecated
 @Getter
 public abstract class PoolESVecModel implements AbstractModel {
 

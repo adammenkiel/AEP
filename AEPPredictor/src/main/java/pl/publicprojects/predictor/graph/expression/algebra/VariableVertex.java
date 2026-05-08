@@ -1,6 +1,8 @@
 package pl.publicprojects.predictor.graph.expression.algebra;
 
 import lombok.Getter;
+import pl.publicprojects.language.interpreter.Interpreter;
+import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.stream.LanguageOutputStream;
 import pl.publicprojects.predictor.graph.TreeVertex;
@@ -32,5 +34,10 @@ public class VariableVertex extends TreeVertex {
     @Override
     public String toString() {
         return "$" + nameId + "$";
+    }
+
+    @Override
+    public LanguageNumber<?> getValue() {
+        return (LanguageNumber<?>)Interpreter.getInst().getCurrentVariableByNameId(this.nameId).getValue();
     }
 }

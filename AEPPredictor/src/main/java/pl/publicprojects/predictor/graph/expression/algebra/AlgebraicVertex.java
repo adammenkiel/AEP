@@ -2,6 +2,7 @@ package pl.publicprojects.predictor.graph.expression.algebra;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.stream.LanguageOutputStream;
 import pl.publicprojects.predictor.graph.TreeVertex;
 
@@ -34,6 +35,17 @@ public class AlgebraicVertex extends TreeVertex {
         };
     }
 
+    private LanguageNumber<?> operation(LanguageNumber<?> a, LanguageNumber<?> b) {
+        return switch (operationId) {
+            case 0 -> a.minus(b);
+            case 1 -> a.plus(b);
+            case 2 -> a.divide(b);
+            case 3 -> a.multiple(b);
+            case 4 -> a.power(b);
+            default -> throw new IllegalStateException("Unexpected value: " + operationId);
+        };
+    }
+
     private byte[] writeChildren(TreeVertex vert) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         LanguageOutputStream stream = new LanguageOutputStream(byteStream);
@@ -61,6 +73,11 @@ public class AlgebraicVertex extends TreeVertex {
     @Override
     public String toString() {
         return "(" + this.children[0] + " " + this.getOperationString() + " " + this.children[1] + ")";
+    }
+
+    @Override
+    public LanguageNumber<?> getValue() {
+        return this.operation(children[0].getValue(), children[1].getValue());
     }
 
     public AlgebraicVertex(int operationId) {

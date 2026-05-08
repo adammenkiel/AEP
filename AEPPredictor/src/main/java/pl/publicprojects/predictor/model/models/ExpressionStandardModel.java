@@ -49,9 +49,9 @@ public abstract class ExpressionStandardModel implements AbstractModel {
             if(res != null) time = res;
 
             TreeVertex vert = generator.generate(); // generate random graph
-            byte[] bytes = vert.visit(); // change to bytes
-            double result = this.test(bytes); // test
 
+            double result = this.test(vert); // test
+            byte[] bytes = vert.visit(); // change to bytes
             this.foundRandomExpression(bytes, result, vert);
             if(maxResult < result) {
                 this.foundResult(bytes, result, vert);
@@ -62,6 +62,47 @@ public abstract class ExpressionStandardModel implements AbstractModel {
         }
     }
 
+    public double test(TreeVertex vert) throws IOException {
+        int fit = 0;
+        int general = 0;
+
+        boolean isCorrect = true;
+        for(DataLineContainer info : this.totalDataContainer.getRawData()) {
+            boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
+
+            info.update(this.getVariables());
+
+            double resultDoubleValue = (double)vert.getValue().getValue();
+            /*(double) interpreter.getAlgebraicExpressionManager()
+                    .getResult(bytes)
+                    .getValue();*/
+
+            if (Double.isInfinite(resultDoubleValue) || Double.isNaN(resultDoubleValue)) {
+                isCorrect = false;
+                resultDoubleValue = 1;
+            }
+
+            boolean guessResult = resultDoubleValue > 0;
+
+            if(guessResult == correctResult) {
+                if(guessResult) {
+                    int rewardForOne = 1;
+                    fit += rewardForOne;
+                    general += rewardForOne;
+                } else {
+                    int rewardForZero = 1;
+                    fit += rewardForZero;
+                    general += rewardForZero;//rewardForZero;
+                }
+            } else {
+                general += 1;
+            }
+        }
+
+        return (double)fit / (double) general;
+    }
+
+    @Deprecated
     public double test(byte[] bytes) throws IOException {
         int fit = 0;
         int general = 0;
