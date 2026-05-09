@@ -24,6 +24,8 @@ public abstract class ExpressionStandardModel implements AbstractModel {
     //private final List<DataLineContainer> rawData = new ArrayList<>();
     private List<VariableData> variables = new ArrayList<>();
     private ExpressGraphGenerator generator;
+    private boolean haveTreeLimits = false;
+    private int pointLimit = 10;
 
     @Setter
     private boolean search = true;
@@ -33,11 +35,22 @@ public abstract class ExpressionStandardModel implements AbstractModel {
         this.interpreter = interpreter;
     }
 
+    public void setTreeLimit(int pointLimit) {
+        this.pointLimit = pointLimit;
+        this.haveTreeLimits = true;
+    }
 
     public void search() throws IOException {
         int dataSize = totalDataContainer.getRawData().getFirst().getSize() - 1;
         System.out.println("DATA SIZE: " + dataSize);
         this.generator = new ExpressGraphGenerator(30, 4, dataSize);
+
+        if(this.haveTreeLimits) {
+            this.generator.setHaveLimit(true);
+            this.generator.setPointLimit(this.pointLimit);
+            this.generator.setVertexEndChance(50);
+        }
+
         this.variables.addAll(this.getTotalDataContainer().createVariables(dataSize));
 
         long time = System.currentTimeMillis();

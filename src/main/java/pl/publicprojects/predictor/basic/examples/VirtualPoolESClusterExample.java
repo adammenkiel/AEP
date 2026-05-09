@@ -83,6 +83,7 @@ public class VirtualPoolESClusterExample {
         };
         container.setVariables(poolESModel.getMainModel().getVariables());
         poolESModel.loadData();
+        //poolESModel.setMainModelTreeLimit(1);
         poolESModel.search();
 
     }

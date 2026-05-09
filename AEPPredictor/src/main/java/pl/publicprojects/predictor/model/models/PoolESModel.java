@@ -108,6 +108,10 @@ public abstract class PoolESModel implements AbstractModel {
         });
     }
 
+    public void setMainModelTreeLimit(int pointLimit) {
+        this.mainModel.setTreeLimit(pointLimit);
+    }
+
     @Override
     public double test(byte[] bytes) throws IOException {
         throw new RuntimeException("Unsupported function!");

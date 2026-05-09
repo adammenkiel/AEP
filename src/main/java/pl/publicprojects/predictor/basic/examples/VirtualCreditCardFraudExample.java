@@ -11,6 +11,7 @@ import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
+import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 
 import java.io.File;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-//Too slow
 public class VirtualCreditCardFraudExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data";
@@ -28,6 +28,7 @@ public class VirtualCreditCardFraudExample {
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
+        ExpressionStandardModel m;
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
@@ -40,7 +41,7 @@ public class VirtualCreditCardFraudExample {
                 return list;
             }
         };
-        PoolESModel standardModel = new PoolESModel(
+        PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,
                 totalDataContainer,
@@ -85,9 +86,10 @@ public class VirtualCreditCardFraudExample {
                 }
             }
         };
-        container.setVariables(standardModel.getMainModel().getVariables());
-        standardModel.loadData();
-        standardModel.search();
+        container.setVariables(poolESModel.getMainModel().getVariables());
+        poolESModel.setMainModelTreeLimit(2);
+        poolESModel.loadData();
+        poolESModel.search();
 
     }
 }
