@@ -21,8 +21,8 @@ public abstract class ExpressionStandardModel implements AbstractModel {
 
     private final Interpreter interpreter;
     private final TotalDataContainer totalDataContainer;
-    //private final List<DataLineContainer> rawData = new ArrayList<>();
-    private List<VariableData> variables = new ArrayList<>();
+    private final List<DataLineContainer> rawData;
+    private final List<VariableData> variables = new ArrayList<>();
     private ExpressGraphGenerator generator;
     private boolean haveTreeLimits = false;
     private int pointLimit = 10;
@@ -32,6 +32,7 @@ public abstract class ExpressionStandardModel implements AbstractModel {
 
     public ExpressionStandardModel(Interpreter interpreter, TotalDataContainer totalDataContainer) {
         this.totalDataContainer = totalDataContainer;
+        this.rawData = this.totalDataContainer.getRawData();
         this.interpreter = interpreter;
     }
 
@@ -58,13 +59,15 @@ public abstract class ExpressionStandardModel implements AbstractModel {
 
         int iter = 0;
         while(this.search) {
-            Long res = this.timeBehaviour(generator, time, iter);
+            final Long res = this.timeBehaviour(generator, time, iter);
             if(res != null) time = res;
 
-            TreeVertex vert = generator.generate(); // generate random graph
+            final TreeVertex vert = generator.generate(); // generate random graph
 
-            double result = this.test(vert); // test
-            byte[] bytes = vert.visit(); // change to bytes
+            final double result = this.test(vert); // test
+            //byte[] bytes = vert.visit(); // change to bytes
+
+            final byte[] bytes = new byte[0];
             this.foundRandomExpression(bytes, result, vert);
             if(maxResult < result) {
                 this.foundResult(bytes, result, vert);
@@ -75,41 +78,21 @@ public abstract class ExpressionStandardModel implements AbstractModel {
         }
     }
 
+    /**
+     * Very simple test function
+     */
     public double test(TreeVertex vert) throws IOException {
         int fit = 0;
         int general = 0;
 
-        boolean isCorrect = true;
-        for(DataLineContainer info : this.totalDataContainer.getRawData()) {
-            boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
-
+        for(final DataLineContainer info : this.rawData) {
+            final boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
             info.update(this.getVariables());
-
-            double resultDoubleValue = (double)vert.getValue().getValue();
-            /*(double) interpreter.getAlgebraicExpressionManager()
-                    .getResult(bytes)
-                    .getValue();*/
-
-            if (Double.isInfinite(resultDoubleValue) || Double.isNaN(resultDoubleValue)) {
-                isCorrect = false;
-                resultDoubleValue = 1;
-            }
-
-            boolean guessResult = resultDoubleValue > 0;
-
-            if(guessResult == correctResult) {
-                if(guessResult) {
-                    int rewardForOne = 1;
-                    fit += rewardForOne;
-                    general += rewardForOne;
-                } else {
-                    int rewardForZero = 1;
-                    fit += rewardForZero;
-                    general += rewardForZero;//rewardForZero;
-                }
-            } else {
-                general += 1;
-            }
+            final double resultDoubleValue = (double)vert.getValue().getValue();
+            final boolean guessResult = resultDoubleValue > 0;
+            if(guessResult == correctResult)
+                fit += 1;
+            general += 1;
         }
 
         return (double)fit / (double) general;
@@ -121,8 +104,8 @@ public abstract class ExpressionStandardModel implements AbstractModel {
         int general = 0;
 
         boolean isCorrect = true;
-        for(DataLineContainer info : this.totalDataContainer.getRawData()) {
-            boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
+        for(DataLineContainer info : this.rawData) {
+            final boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
 
             info.update(this.getVariables());
 

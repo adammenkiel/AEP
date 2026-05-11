@@ -68,8 +68,6 @@ public class ExpressGraphGenerator {
     private TreeVertex drawEnd() {
         int a = random.nextInt(100);
         int chanceOne = vertexEndChance;
-        int standardAlgebra = random.nextInt(3);
-        if(standardAlgebra == 2) standardAlgebra = 3;
 
         return switch(a) {
             default -> {
@@ -87,11 +85,11 @@ public class ExpressGraphGenerator {
         AlgebraicVertex algebraicVertex = new AlgebraicVertex(standardAlgebra);
         vertexList.add(algebraicVertex);
         int addedPointsAmount = 0;
+        final boolean haveLimitConst = haveLimit;
         while(!vertexList.isEmpty()) {
             AlgebraicVertex random = this.getRandom();
 
-            TreeVertex createdChild = haveLimit && this.pointLimit < addedPointsAmount
-                    ? this.drawEnd() : this.draw();
+            TreeVertex createdChild = haveLimitConst && this.pointLimit < addedPointsAmount ? this.drawEnd() : this.draw();
 
             random.addChild(createdChild);
             if(createdChild instanceof AlgebraicVertex alg) {
@@ -100,7 +98,7 @@ public class ExpressGraphGenerator {
             if(!random.hasPlace()) {
                 this.vertexList.remove(random);
             }
-            addedPointsAmount += 1;
+            if(haveLimitConst) addedPointsAmount += 1;
         }
         return algebraicVertex;
     }
