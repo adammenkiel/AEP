@@ -1,6 +1,7 @@
 package pl.publicprojects.language.interpreter.data.math.bool;
 
 import lombok.Getter;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
@@ -29,6 +30,10 @@ public class BooleanExpressionManager {
     }
 
     private boolean countRelation(int id, LanguageNumber<?> a, LanguageNumber<?> b) {
+        if(a.getValue() instanceof INDArray || b.getValue() instanceof INDArray) {
+            throw new RuntimeException("Unsupported type");
+        }
+
         return switch (id) {
             case 0 -> a.less(b); // a < b
             case 1 -> b.less(a); // b > a
