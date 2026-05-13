@@ -8,6 +8,7 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 import pl.publicprojects.language.interpreter.stream.LanguageOutputStream;
 
 import java.io.IOException;
+import java.util.List;
 
 public class DoubleVectorNumber extends LanguageNumber<INDArray> {
 
@@ -15,6 +16,9 @@ public class DoubleVectorNumber extends LanguageNumber<INDArray> {
 
     public DoubleVectorNumber(INDArray value) {
         this.value = value;
+    }
+    public DoubleVectorNumber(List<Double> doubles) {
+        this.value = Nd4j.create(doubles);
     }
 
     @Override

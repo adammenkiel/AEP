@@ -13,6 +13,7 @@ import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class VirtualCreditCardFraudExample {
                 interpreter,
                 container,
                 totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
                 0,
                 20,
                 false

@@ -9,6 +9,7 @@ import pl.publicprojects.predictor.model.AbstractModel;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.tester.AbstractTester;
 
 import java.io.IOException;
 
@@ -20,7 +21,9 @@ public abstract class PoolESVecModel implements AbstractModel {
     private final TotalDataContainer totalDataContainer;
     private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
+    private final AbstractTester<TreeVertex> mainModelTester;
     private final ExpressionStandardModel helpfulModel;
+    private final AbstractTester<TreeVertex> helpfulModelTester;
     private final long qualityTime;
     private final int amount;
     private final PoolESVecModel model = this;
@@ -33,16 +36,27 @@ public abstract class PoolESVecModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public PoolESVecModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, TotalDataContainer totalDataContainer, long qualityTime, int amount, boolean minTime) {
+    public PoolESVecModel(
+            Interpreter interpreter,
+            ProxyDataLineContainer proxyDataContainer,
+            TotalDataContainer totalDataContainer,
+            AbstractTester<TreeVertex> helpfulModelTester,
+            AbstractTester<TreeVertex> mainModelTester,
+            long qualityTime,
+            int amount,
+            boolean minTime
+    ) {
         this.proxyDataContainer = proxyDataContainer;
         this.totalDataContainer = totalDataContainer;
+        this.helpfulModelTester = helpfulModelTester;
+        this.mainModelTester = mainModelTester;
         this.interpreter = interpreter;
         this.qualityTime = qualityTime;
         this.amount = amount;
         this.minTime = minTime;
 
 
-        this.helpfulModel = new ExpressionStandardModel(this.interpreter, this.totalDataContainer) {
+        this.helpfulModel = new ExpressionStandardModel(this.interpreter, this.totalDataContainer, this.helpfulModelTester) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 if(!searching) return;
@@ -74,8 +88,9 @@ public abstract class PoolESVecModel implements AbstractModel {
             @Override
             public void loadData() throws Exception {}
         };
+        this.helpfulModelTester.setVariables(this.helpfulModel.getVariables());
 
-        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer) {
+        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer, this.mainModelTester) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 model.foundResult(bytes, grade, vertex);
@@ -89,6 +104,7 @@ public abstract class PoolESVecModel implements AbstractModel {
             @Override
             public void loadData() throws Exception {}
         };
+        this.mainModelTester.setVariables(this.mainModel.getVariables());
     }
 
     @Override

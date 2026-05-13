@@ -2,6 +2,8 @@ package pl.publicprojects.predictor.model.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
@@ -10,6 +12,7 @@ import pl.publicprojects.predictor.model.AbstractModel;
 import pl.publicprojects.predictor.model.data.DataLineContainer;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.tester.AbstractTester;
 
 import java.io.IOException;
 
@@ -19,8 +22,10 @@ public abstract class PoolESModel implements AbstractModel {
     private final Interpreter interpreter;
     private final ProxyDataLineContainer proxyDataContainer;
     private final ExpressionStandardModel mainModel;
+    private final AbstractTester<TreeVertex> mainModelTester;
     private final TotalDataContainer totalDataContainer;
     private final StandardModel helpfulModel;
+    private final AbstractTester<TreeVertex> helpfulModelTester;
     private final long qualityTime;
     private final int amount;
     private final PoolESModel model = this;
@@ -30,18 +35,31 @@ public abstract class PoolESModel implements AbstractModel {
     private boolean searching = true;
     private final boolean minTime;
 
+    private static final Logger logger = LoggerFactory.getLogger(PoolESModel.class);
+
     @Setter
     private boolean search = true;
 
-    public PoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, TotalDataContainer totalDataContainer, long qualityTime, int amount, boolean minTime) {
+    public PoolESModel(
+            Interpreter interpreter,
+            ProxyDataLineContainer proxyDataContainer,
+            TotalDataContainer totalDataContainer,
+            AbstractTester<TreeVertex> helpfulModelTester,
+            AbstractTester<TreeVertex> mainModelTester,
+            long qualityTime,
+            int amount,
+            boolean minTime
+    ) {
         this.proxyDataContainer = proxyDataContainer;
         this.totalDataContainer = totalDataContainer;
+        this.helpfulModelTester = helpfulModelTester;
+        this.mainModelTester = mainModelTester;
         this.interpreter = interpreter;
         this.qualityTime = qualityTime;
         this.amount = amount;
         this.minTime = minTime;
 
-        this.helpfulModel = new StandardModel(this.interpreter) {
+        this.helpfulModel = new StandardModel(this.interpreter, totalDataContainer, this.helpfulModelTester) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 if(!searching) return;
@@ -61,6 +79,7 @@ public abstract class PoolESModel implements AbstractModel {
                     proxyDataContainer.getExpressionList().add(bytes);
                     //mainModel.getGenerator().setVariablesAmount(mainModel.getGenerator().getVariablesAmount() + 1);
                     int size = proxyDataContainer.getExpressionList().size();
+
                     System.out.println("Found expression " + size + " / " + amount);
                     System.out.println("$" + (size + rawDataTableSize) + "$ = " +vertex.toString());
                     System.out.println("Grade " + grade + " qualityGrade " + gradeResult);
@@ -74,8 +93,9 @@ public abstract class PoolESModel implements AbstractModel {
             @Override
             public void loadData() throws Exception {}
         };
+        this.helpfulModelTester.setVariables(this.helpfulModel.getVariables());
 
-        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer) {
+        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer, this.mainModelTester) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 model.foundResult(bytes, grade, vertex);
@@ -90,6 +110,7 @@ public abstract class PoolESModel implements AbstractModel {
             public void loadData() throws Exception {}
 
         };
+        this.mainModelTester.setVariables(this.mainModel.getVariables());
     }
 
     @Override
@@ -120,7 +141,7 @@ public abstract class PoolESModel implements AbstractModel {
     public void addData(DataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
         this.getMainModel().getTotalDataContainer().getRawData().add(data);
-        this.getHelpfulModel().getRawData().add(data.getRawData());
+        this.getHelpfulModel().getTotalDataContainer().getRawData().add(data);
     }
 
     public ExpressGraphGenerator getGenerator() {

@@ -11,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.PoolESModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +38,16 @@ public class PoolESClusterExample {
                 return list;
             }
         };
-        PoolESModel poolESModel = new PoolESModel(interpreter, container, totalDataContainer, 100, 5, false) {
+        PoolESModel poolESModel = new PoolESModel(
+                interpreter,
+                container,
+                totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
+                100,
+                5,
+                false
+        ) {
 
             private double max = 0;
 

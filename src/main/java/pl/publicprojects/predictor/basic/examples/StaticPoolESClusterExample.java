@@ -10,6 +10,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.StaticPoolESModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +38,14 @@ public class StaticPoolESClusterExample {
                 return list;
             }
         };
-        StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter, container, totalDataContainer,10, 0.3) {
+        StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter,
+                container,
+                totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
+                10,
+                0.3
+        ) {
 
             private double max = 0;
 

@@ -11,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +39,11 @@ public class GeneticDiabetesDBExample {
                 return list;
             }
         };
-        ExpressionStandardModel standardModel = new ExpressionStandardModel(interpreter, totalDataContainer) {
+        ExpressionStandardModel standardModel = new ExpressionStandardModel(
+                interpreter,
+                totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter)
+        ) {
 
             private double max = 0;
 

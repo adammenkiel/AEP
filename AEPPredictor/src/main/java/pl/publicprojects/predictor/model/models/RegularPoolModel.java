@@ -10,6 +10,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
+import pl.publicprojects.predictor.model.tester.AbstractTester;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public abstract class RegularPoolModel implements AbstractModel {
 
     private final int partAmount;
     private final Interpreter interpreter;
+    private final AbstractTester<TreeVertex> tester;
     private final List<StandardDataLineContainer> rawData = new ArrayList<>();
     private final List<VariableData> variables = new ArrayList<>();
     private final List<SimpleResultContainer> analysedResults = new ArrayList<>();
@@ -36,9 +38,11 @@ public abstract class RegularPoolModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public RegularPoolModel(Interpreter interpreter, int partAmount) {
+    public RegularPoolModel(Interpreter interpreter, AbstractTester<TreeVertex> tester, int partAmount) {
         this.interpreter = interpreter;
         this.partAmount = partAmount;
+        this.tester = tester;
+        this.tester.setVariables(variables);
     }
 
     public void search() throws IOException {
@@ -62,7 +66,7 @@ public abstract class RegularPoolModel implements AbstractModel {
 
             TreeVertex vert = generator.generate(); // generate random graph
             byte[] bytes = vert.visit(); // change to bytes
-            double result = this.test(bytes); // test
+            double result = this.tester.test(vert);//this.test(bytes); // test
 
             this.foundRandomExpression(bytes, result, vert);
             if(maxResult < result) {
@@ -86,42 +90,7 @@ public abstract class RegularPoolModel implements AbstractModel {
     }
 
     public double test(byte[] bytes) throws IOException {
-        int fit = 0;
-        int general = 0;
-
-        boolean isCorrect = true;
-        for(StandardDataLineContainer info : this.rawData) {
-            boolean correctResult = ((IntegerNumber)info.get(0)).getValue() == 1;
-
-            info.update(this.getVariables());
-
-            double resultDoubleValue = (double) interpreter.getAlgebraicExpressionManager()
-                    .getResult(bytes)
-                    .getValue();
-
-            if (Double.isInfinite(resultDoubleValue) || Double.isNaN(resultDoubleValue)) {
-                isCorrect = false;
-                resultDoubleValue = 1;
-            }
-
-            boolean guessResult = resultDoubleValue > 0;
-
-            if(guessResult == correctResult) {
-                if(guessResult) {
-                    int rewardForOne = 1;
-                    fit += rewardForOne;
-                    general += rewardForOne;
-                } else {
-                    int rewardForZero = 1;
-                    fit += rewardForZero;
-                    general += rewardForZero;//rewardForZero;
-                }
-            } else {
-                general += 1;
-            }
-        }
-
-        return (double)fit / (double) general;
+        throw new RuntimeException("Unsupported!");
     }
 
     public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);

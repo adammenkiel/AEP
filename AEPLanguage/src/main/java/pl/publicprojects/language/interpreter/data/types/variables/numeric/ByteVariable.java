@@ -2,11 +2,12 @@ package pl.publicprojects.language.interpreter.data.types.variables.numeric;
 
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
+import pl.publicprojects.language.interpreter.data.math.number.numbers.ByteNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 
 import java.io.IOException;
 
-@Deprecated
+
 public class ByteVariable extends VariableData {
     @Override
     public int getId() {
@@ -20,7 +21,7 @@ public class ByteVariable extends VariableData {
 
     @Override
     public Object getValue() {
-        return this.getData()[0];
+        return new ByteNumber(this.getData()[0]);
     }
 
     @Override

@@ -15,6 +15,7 @@ import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Scanner;
 
 public class VirtualGeneticDiabetesDBExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mathchi/diabetes-data-set";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/Diabetes/output.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -42,7 +43,16 @@ public class VirtualGeneticDiabetesDBExample {
                 return list;
             }
         };
-        PoolESModel standardModel = new PoolESModel(interpreter, container, totalDataContainer, 1000, 20, false) {
+        PoolESModel standardModel = new PoolESModel(
+                interpreter,
+                container,
+                totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
+                1000,
+                20,
+                false
+        ) {
 
             private double max = 0;
 

@@ -5,10 +5,14 @@ import lombok.Setter;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
+import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
+import pl.publicprojects.predictor.model.data.DataLineContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.tester.AbstractTester;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,25 +22,27 @@ import java.util.List;
 public abstract class StandardModel implements AbstractModel {
 
     private final Interpreter interpreter;
-    private final List<LanguageNumber<?>[]> rawData = new ArrayList<>();
-    private final List<DoubleVariable> variables = new ArrayList<>();
+    private final AbstractTester<TreeVertex> tester;
+
+    private final TotalDataContainer totalDataContainer;
+    private final List<DataLineContainer> rawData;
+    private final List<VariableData> variables = new ArrayList<>();
 
     @Setter
     private boolean search = true;
 
-    public StandardModel(Interpreter interpreter) {
+    public StandardModel(Interpreter interpreter, TotalDataContainer totalDataContainer, AbstractTester<TreeVertex> tester) {
+        this.totalDataContainer = totalDataContainer;
+        this.rawData = this.totalDataContainer.getRawData();
         this.interpreter = interpreter;
+        this.tester = tester;
+        this.tester.setVariables(variables);
     }
 
     public void search() throws IOException {
-        int dataSize = rawData.getFirst().length - 1;
+        int dataSize = rawData.getFirst().getRawData().length - 1;
         ExpressGraphGenerator generator = new ExpressGraphGenerator(30, 10, dataSize);
-
-        for(int nameId = 0; nameId < dataSize; nameId++) {
-            DoubleVariable variable = new DoubleVariable(nameId);
-            variable.execute();
-            this.variables.add(variable);
-        }
+        this.variables.addAll(this.getTotalDataContainer().createVariables(dataSize));
 
         long time = System.currentTimeMillis();
         double maxResult = 0;
@@ -48,7 +54,7 @@ public abstract class StandardModel implements AbstractModel {
 
             TreeVertex vert = generator.generate(); // generate random graph
             byte[] bytes = vert.visit(); // change to bytes
-            double result = this.test(bytes); // test
+            double result = this.tester.test(vert); // test
 
             this.foundRandomExpression(bytes, result, vert);
             if(maxResult < result) {
@@ -59,54 +65,8 @@ public abstract class StandardModel implements AbstractModel {
         }
     }
 
-    @Deprecated
-    private void printBytes(byte[] bytes) {
-        String lab = "";
-        for(byte b : bytes) {
-            lab += ((int)b) + ", ";
-        }
-        System.out.println(lab);
-    }
-
     public double test(byte[] bytes) throws IOException {
-        int fit = 0;
-        int general = 0;
-
-        boolean isCorrect = true;
-        for(LanguageNumber<?>[] info : this.rawData) {
-            boolean correctResult = ((IntegerNumber)info[0]).getValue() == 1;
-
-            for(int i = 0; i < info.length - 1; i++) {
-                this.getVariables().get(i).setValue(info[i + 1]);
-            }
-
-            double resultDoubleValue = (double) interpreter.getAlgebraicExpressionManager()
-                    .getResult(bytes)
-                    .getValue();
-
-            if (Double.isInfinite(resultDoubleValue) || Double.isNaN(resultDoubleValue)) {
-                isCorrect = false;
-                resultDoubleValue = 1;
-            }
-
-            boolean guessResult = resultDoubleValue > 0;
-
-            if(guessResult == correctResult) {
-                if(guessResult) {
-                    int rewardForOne = 1;
-                    fit += rewardForOne;
-                    general += rewardForOne;
-                } else {
-                    int rewardForZero = 1;
-                    fit += rewardForZero;
-                    general += rewardForZero;//rewardForZero;
-                }
-            } else {
-                general += 10;
-            }
-        }
-
-        return (double)fit / (double) general;
+        throw new RuntimeException("Unsupported function!");
     }
 
     public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);

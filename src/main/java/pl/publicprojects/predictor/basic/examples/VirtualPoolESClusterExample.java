@@ -14,6 +14,7 @@ import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.Scanner;
 
 public class VirtualPoolESClusterExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/helper/wynik.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -41,7 +42,16 @@ public class VirtualPoolESClusterExample {
                 return list;
             }
         };
-        PoolESModel poolESModel = new PoolESModel(interpreter, container, totalDataContainer, 200, 10, false) {
+        PoolESModel poolESModel = new PoolESModel(
+                interpreter,
+                container,
+                totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
+                200,
+                10,
+                false
+        ) {
 
             private double max = 0;
 

@@ -11,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.PoolESVecModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +39,16 @@ public class PoolESCVecClusterExample {
                 return list;
             }
         };
-        PoolESVecModel poolESModel = new PoolESVecModel(interpreter, container, totalDataContainer, 100, 10, false) {
+        PoolESVecModel poolESModel = new PoolESVecModel(
+                interpreter,
+                container,
+                totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
+                100,
+                10,
+                false
+        ) {
 
             private double max = 0;
 

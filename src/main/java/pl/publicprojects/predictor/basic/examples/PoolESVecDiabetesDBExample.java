@@ -11,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.models.PoolESVecModel;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 
 import java.io.File;
@@ -43,6 +44,8 @@ public class PoolESVecDiabetesDBExample {
                 interpreter,
                 container,
                 totalDataContainer,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
                 4000,
                 10,
                 false

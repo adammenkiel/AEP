@@ -9,6 +9,7 @@ import pl.publicprojects.predictor.model.AbstractModel;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.tester.AbstractTester;
 
 import java.io.IOException;
 
@@ -19,7 +20,9 @@ public abstract class StaticPoolESModel implements AbstractModel {
     private final ProxyDataLineContainer proxyDataContainer;
     private final TotalDataContainer totalDataContainer;
     private final ExpressionStandardModel mainModel;
+    private final AbstractTester<TreeVertex> mainModelTester;
     private final StandardModel helpfulModel;
+    private final AbstractTester<TreeVertex> helpfulModelTester;
     private final int amount;
     private final StaticPoolESModel model = this;
     private long startTime = -1;
@@ -29,14 +32,24 @@ public abstract class StaticPoolESModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public StaticPoolESModel(Interpreter interpreter, ProxyDataLineContainer proxyDataContainer, TotalDataContainer totalDataContainer, int amount, double gradeResult) {
+    public StaticPoolESModel(
+            Interpreter interpreter,
+            ProxyDataLineContainer proxyDataContainer,
+            TotalDataContainer totalDataContainer,
+            AbstractTester<TreeVertex> helpfulModelTester,
+            AbstractTester<TreeVertex> mainModelTester,
+            int amount,
+            double gradeResult
+    ) {
         this.proxyDataContainer = proxyDataContainer;
         this.totalDataContainer = totalDataContainer;
+        this.helpfulModelTester = helpfulModelTester;
+        this.mainModelTester = mainModelTester;
         this.interpreter = interpreter;
         this.amount = amount;
         this.gradeResult = gradeResult;
 
-        this.helpfulModel = new StandardModel(this.interpreter) {
+        this.helpfulModel = new StandardModel(this.interpreter, this.totalDataContainer, this.helpfulModelTester) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {}
 
@@ -59,8 +72,9 @@ public abstract class StaticPoolESModel implements AbstractModel {
             @Override
             public void loadData() throws Exception {}
         };
+        this.helpfulModelTester.setVariables(this.helpfulModel.getVariables());
 
-        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer) {
+        this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer, this.mainModelTester) {
             @Override
             public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
                 model.foundResult(bytes, grade, vertex);
@@ -74,6 +88,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
             @Override
             public void loadData() throws Exception {}
         };
+        this.mainModelTester.setVariables(this.mainModel.getVariables());
     }
 
     @Override
@@ -100,7 +115,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
     public void addData(StandardDataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
         this.getMainModel().getTotalDataContainer().getRawData().add(data);
-        this.getHelpfulModel().getRawData().add(data.getRawData());
+        this.getHelpfulModel().getTotalDataContainer().getRawData().add(data);
     }
 
     public ExpressGraphGenerator getGenerator() {
