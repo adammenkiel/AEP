@@ -43,6 +43,7 @@ public class AlgebraicExpressionManager {
             case 3 -> new LongNumber();
             case 4 -> new FloatNumber();
             case 5 -> new DoubleNumber();
+            case 6 -> new DoubleVectorNumber();
             default -> throw new IllegalStateException("Unexpected value: " + id);
         };
     }

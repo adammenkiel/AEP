@@ -1,13 +1,16 @@
 package pl.publicprojects.predictor.basic.examples;
 
+import org.nd4j.linalg.factory.Nd4j;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleVectorNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.DoubleVectorVariable;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
@@ -15,15 +18,17 @@ import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
+import pl.publicprojects.predictor.model.tester.tests.StandardVectorTest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class VectorESClusterExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/helper/wynik.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -41,13 +46,25 @@ public class VectorESClusterExample {
                 }
                 return list;
             }
+
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                DoubleVectorVariable variable = new DoubleVectorVariable(nameId, new ArrayList<>());
+                variable.execute();
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleVectorNumber(Nd4j.zeros(500)));
+            }
         };
         PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,
                 totalDataContainer,
-                new StandardNumberTest(totalDataContainer, interpreter),
-                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardVectorTest(totalDataContainer, interpreter),
+                new StandardVectorTest(totalDataContainer, interpreter),
                 200,
                 10,
                 false
@@ -90,12 +107,13 @@ public class VectorESClusterExample {
                     xVal.add(x);
                     yVal.add(y);
                 }
+
                 LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 2];
                 numberTable[0] = new DoubleVectorNumber(score);
                 numberTable[1] = new DoubleVectorNumber(xVal);
                 numberTable[2] = new DoubleVectorNumber(yVal);
 
-                super.addData(new VirtualDataLineContainer(numberTable, container, pointer));
+                super.addData(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));
             }
         };
         container.setVariables(poolESModel.getMainModel().getVariables());

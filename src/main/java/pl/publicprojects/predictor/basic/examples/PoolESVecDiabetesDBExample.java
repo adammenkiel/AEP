@@ -15,6 +15,7 @@ import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -38,6 +39,18 @@ public class PoolESVecDiabetesDBExample {
                     list.add(variable);
                 }
                 return list;
+            }
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                DoubleVariable variable = new DoubleVariable(nameId);
+                variable.execute();
+                variable.setValue(new DoubleNumber(0));
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleNumber(0));
             }
         };
         PoolESVecModel poolESVecModel = new PoolESVecModel(
@@ -103,7 +116,7 @@ public class PoolESVecDiabetesDBExample {
                     numberTable[7] = new DoubleNumber(a7);
                     numberTable[8] = new DoubleNumber(a8);
 
-                    super.addData(new StandardDataLineContainer(numberTable, container));
+                    super.addData(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));
                 }
             }
         };

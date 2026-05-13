@@ -36,6 +36,7 @@ public class AlgebraicVertex extends TreeVertex {
     }
 
     private LanguageNumber<?> operation(LanguageNumber<?> a, LanguageNumber<?> b) {
+        //System.out.println("Oper " + a.getValue() + " " + b.getValue());
         return switch (operationId) {
             case 0 -> a.minus(b);
             case 1 -> a.plus(b);

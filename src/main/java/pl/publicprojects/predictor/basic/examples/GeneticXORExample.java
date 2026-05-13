@@ -14,6 +14,7 @@ import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -36,6 +37,18 @@ public class GeneticXORExample {
                     list.add(variable);
                 }
                 return list;
+            }
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                DoubleVariable variable = new DoubleVariable(nameId);
+                variable.execute();
+                variable.setValue(new DoubleNumber(0));
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleNumber(0));
             }
         };
         ExpressionStandardModel standardModel = new ExpressionStandardModel(
@@ -86,7 +99,7 @@ public class GeneticXORExample {
                     numberTable[3] = new DoubleNumber(a3);
                     numberTable[4] = new DoubleNumber(a4);
 
-                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(numberTable, container));
+                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));
                 }
             }
         };

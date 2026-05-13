@@ -35,7 +35,6 @@ public abstract class PoolESModel implements AbstractModel {
     private boolean searching = true;
     private final boolean minTime;
 
-    private static final Logger logger = LoggerFactory.getLogger(PoolESModel.class);
 
     @Setter
     private boolean search = true;
@@ -140,8 +139,8 @@ public abstract class PoolESModel implements AbstractModel {
 
     public void addData(DataLineContainer data) {
         this.rawDataTableSize = data.getSize() - 2;
-        this.getMainModel().getTotalDataContainer().getRawData().add(data);
-        this.getHelpfulModel().getTotalDataContainer().getRawData().add(data);
+        this.getTotalDataContainer().getRawData().add(data);
+        //this.getHelpfulModel().getTotalDataContainer().getRawData().add(data);
     }
 
     public ExpressGraphGenerator getGenerator() {

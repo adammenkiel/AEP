@@ -40,9 +40,11 @@ public class DoubleVectorVariable extends VariableData {
 
     @Override
     public void setValue(Object obj) throws IOException {
-        if(obj instanceof INDArray arr) {
-            this.array = arr;
+        //System.out.println("test");
+        if(obj instanceof DoubleVectorNumber number) {
+            this.array = number.getValue();
+            return;
         }
-        throw new RuntimeException("Unsupported type");
+        throw new RuntimeException("Unsupported type " + obj.getClass().getSimpleName());
     }
 }

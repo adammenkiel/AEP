@@ -1,5 +1,6 @@
 package pl.publicprojects.language.interpreter.data.math.number.numbers;
 
+import lombok.NoArgsConstructor;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
@@ -10,6 +11,7 @@ import pl.publicprojects.language.interpreter.stream.LanguageOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+@NoArgsConstructor
 public class DoubleVectorNumber extends LanguageNumber<INDArray> {
 
     private INDArray value;
@@ -23,7 +25,7 @@ public class DoubleVectorNumber extends LanguageNumber<INDArray> {
 
     @Override
     public INDArray getValue() {
-        return null;
+        return this.value;
     }
 
     @Override

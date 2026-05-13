@@ -6,6 +6,7 @@ import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,4 +16,6 @@ public abstract class TotalDataContainer {
     private final List<DataLineContainer> rawData = new ArrayList<>();
 
     public abstract List<VariableData> createVariables(int dataSize);
+    public abstract VariableData createVariable(int nameId) throws IOException;
+    public abstract LanguageNumber<?> standardize(LanguageNumber<?> var) throws IOException;
 }

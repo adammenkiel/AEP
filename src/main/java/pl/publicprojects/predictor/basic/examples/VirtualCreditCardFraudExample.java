@@ -16,6 +16,7 @@ import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -40,6 +41,18 @@ public class VirtualCreditCardFraudExample {
                     list.add(variable);
                 }
                 return list;
+            }
+
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                variable.execute();
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleNumber(0));
             }
         };
         PoolESModel poolESModel = new PoolESModel(

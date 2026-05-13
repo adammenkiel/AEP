@@ -1,11 +1,13 @@
 package pl.publicprojects.predictor.model.data.container;
 
 import lombok.Getter;
+import pl.publicprojects.language.interpreter.data.LanguageData;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.model.data.DataLineContainer;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.List;
 * */
 @Getter
 public class StandardDataLineContainer implements DataLineContainer {
+
+    private TotalDataContainer totalDataContainer;
     private final LanguageNumber<?>[] rawData;
     private final ProxyDataLineContainer proxyDataContainer;
 
@@ -27,7 +31,8 @@ public class StandardDataLineContainer implements DataLineContainer {
     * @param rawData Standard dataSet that we load at the start
     * @param proxyDataContainer While model running, we can add new, good-scored expression for generating better results
     */
-    public StandardDataLineContainer(LanguageNumber<?>[] rawData, ProxyDataLineContainer proxyDataContainer) {
+    public StandardDataLineContainer(TotalDataContainer totalDataContainer, LanguageNumber<?>[] rawData, ProxyDataLineContainer proxyDataContainer) {
+        this.totalDataContainer = totalDataContainer;
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
     }
@@ -37,7 +42,11 @@ public class StandardDataLineContainer implements DataLineContainer {
     * @param proxyDataContainer While model running, we can add new, good-scored expression for generating better results
     * @param freezeValues If freezeValues=true you can't update old proxyValues by very easy way
     */
-    public StandardDataLineContainer(LanguageNumber<?>[] rawData, ProxyDataLineContainer proxyDataContainer, boolean freezeValues) {
+    public StandardDataLineContainer(
+            LanguageNumber<?>[] rawData,
+            ProxyDataLineContainer proxyDataContainer,
+            boolean freezeValues
+    ) {
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
         this.freezeValues = freezeValues;
@@ -71,21 +80,25 @@ public class StandardDataLineContainer implements DataLineContainer {
     public void update(List<VariableData> variables) throws IOException {
         this.rawUpdate(variables);
         while(this.getSize() - 1 > variables.size()) {
-            DoubleVariable variable = new DoubleVariable(variables.size());
+            VariableData variable = this.totalDataContainer.createVariable(variables.size());
+            variable.execute();
+            variables.add(variable);
+
+            /*new DoubleVariable(variables.size());
             variable.execute();
             variable.setValue(new DoubleNumber(0));
-            variables.add(variable);
+            variables.add(variable);*/
         }
 
         if(!freezeValues) {
             for(int i = rawData.length - 1; i < this.getSize() - 1; i++) {
                 int proxyIndex = i - this.rawData.length + 1;
-                variables.get(i).setValue(this.proxyDataContainer.getValue(proxyIndex));
+                variables.get(i).setValue(this.totalDataContainer.standardize(this.proxyDataContainer.getValue(proxyIndex)));
             }
         } else {
             while(this.proxyDataContainer.getExpressionList().size() > this.frozenValues.size()) {
                 var val = this.proxyDataContainer.getValue(this.frozenValues.size());
-                this.frozenValues.add(val);
+                this.frozenValues.add(this.totalDataContainer.standardize(val));
             }
 
             for(int i = rawData.length - 1; i < this.getSize() - 1; i++) {

@@ -17,13 +17,14 @@ import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class VirtualMakeMoonExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/Modell/Fildereq/MakeMoons/output.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download two moons dataset"; //"C:/Users/akmen/Desktop/Modell/Fildereq/MakeMoons/output.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -40,6 +41,18 @@ public class VirtualMakeMoonExample {
                     list.add(variable);
                 }
                 return list;
+            }
+
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                variable.execute();
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleNumber(0));
             }
         };
         PoolESModel poolESModel = new PoolESModel(

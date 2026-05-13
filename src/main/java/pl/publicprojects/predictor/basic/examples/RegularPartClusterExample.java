@@ -16,6 +16,7 @@ import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -38,6 +39,18 @@ public class RegularPartClusterExample {
                     list.add(variable);
                 }
                 return list;
+            }
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                DoubleVariable variable = new DoubleVariable(nameId);
+                variable.execute();
+                variable.setValue(new DoubleNumber(0));
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleNumber(0));
             }
         };
 
@@ -79,7 +92,7 @@ public class RegularPartClusterExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.getRawData().add(new StandardDataLineContainer(numberTable, container));
+                    super.getRawData().add(new StandardDataLineContainer(totalDataContainer, numberTable, container));
                 }
             }
         };

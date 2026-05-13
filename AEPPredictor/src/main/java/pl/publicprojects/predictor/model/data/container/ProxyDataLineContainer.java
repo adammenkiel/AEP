@@ -2,9 +2,11 @@ package pl.publicprojects.predictor.model.data.container;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
+import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleVectorNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 
 import java.io.IOException;
@@ -38,11 +40,16 @@ public class ProxyDataLineContainer {
     public LanguageNumber<?> getValue(int index) throws IOException {
         byte[] expression = expressionList.get(index);
 
-        double resultDoubleValue = (double) interpreter.getAlgebraicExpressionManager()
+        Object resultValue = interpreter.getAlgebraicExpressionManager()
                 .getResult(expression)
                 .getValue();
 
-        return new DoubleNumber(resultDoubleValue);
+        if(resultValue instanceof Double resultDoubleValue)
+            return new DoubleNumber(resultDoubleValue);
+        if(resultValue instanceof INDArray arr) {
+            return new DoubleVectorNumber(arr);
+        }
+        throw new RuntimeException("Unsupported type: " + resultValue.getClass().getSimpleName());
     }
 
 }

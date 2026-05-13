@@ -14,6 +14,7 @@ import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -37,6 +38,19 @@ public class GeneticDiabetesDBExample {
                     list.add(variable);
                 }
                 return list;
+            }
+
+            @Override
+            public VariableData createVariable(int nameId) throws IOException {
+                DoubleVariable variable = new DoubleVariable(nameId);
+                variable.execute();
+                variable.setValue(new DoubleNumber(0));
+                return variable;
+            }
+
+            @Override
+            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
+                return var.plus(new DoubleNumber(0));
             }
         };
         ExpressionStandardModel standardModel = new ExpressionStandardModel(
@@ -93,7 +107,7 @@ public class GeneticDiabetesDBExample {
                     numberTable[7] = new DoubleNumber(a7);
                     numberTable[8] = new DoubleNumber(a8);
 
-                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(numberTable, container));
+                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(super.getTotalDataContainer(), numberTable, container));
                 }
             }
         };
