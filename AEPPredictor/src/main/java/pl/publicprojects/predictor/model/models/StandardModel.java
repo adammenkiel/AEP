@@ -2,6 +2,8 @@ package pl.publicprojects.predictor.model.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
@@ -28,6 +30,8 @@ public abstract class StandardModel implements AbstractModel {
     private final List<DataLineContainer> rawData;
     private final List<VariableData> variables = new ArrayList<>();
 
+    private static final Logger logger = LoggerFactory.getLogger(StandardModel.class);
+
     @Setter
     private boolean search = true;
 
@@ -53,12 +57,11 @@ public abstract class StandardModel implements AbstractModel {
             if(res != null) time = res;
 
             TreeVertex vert = generator.generate(); // generate random graph
-            byte[] bytes = vert.visit(); // change to bytes
             double result = this.tester.test(vert); // test
 
-            this.foundRandomExpression(bytes, result, vert);
+            this.foundRandomExpression(result, vert);
             if(maxResult < result) {
-                this.foundResult(bytes, result, vert);
+                this.foundResult(result, vert);
                 maxResult = result;
             }
             iter++;
@@ -69,8 +72,8 @@ public abstract class StandardModel implements AbstractModel {
         throw new RuntimeException("Unsupported function!");
     }
 
-    public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);
-    public abstract void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundResult(double grade, TreeVertex vertex);
+    public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 
     public Long timeBehaviour(ExpressGraphGenerator generator, long time, int iter) {
@@ -79,7 +82,7 @@ public abstract class StandardModel implements AbstractModel {
             if(generator.getVertexChance() < 36) {
                 generator.setVertexChance(generator.getVertexChance() + 1);
             }
-            System.out.println("Thinking... (Iteration: " + iter + ")");
+            logger.info("Thinking... (Iteration: {})", iter);
             return System.currentTimeMillis();
         }
         return null;

@@ -9,9 +9,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
-import pl.publicprojects.predictor.model.data.lang.DataPointer;
-import pl.publicprojects.predictor.model.data.lang.DoubleVectorVariable;
-import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVectorVariable;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardVectorTest;
 
@@ -29,8 +27,6 @@ public class VectorCreditCardFraudExample {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
-        DataPointer pointer = new DataPointer();
-        ExpressionStandardModel m;
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
@@ -70,7 +66,7 @@ public class VectorCreditCardFraudExample {
             private double max = 0;
 
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
                 try {
@@ -85,7 +81,7 @@ public class VectorCreditCardFraudExample {
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(double grade, TreeVertex vertex) {}
 
             @Override
             public void loadData() throws Exception {

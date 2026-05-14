@@ -2,6 +2,8 @@ package pl.publicprojects.predictor.model.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
@@ -29,6 +31,9 @@ public abstract class ExpressionStandardModel implements AbstractModel {
     private boolean haveTreeLimits = false;
     private int pointLimit = 10;
 
+    @Getter
+    private static final Logger logger = LoggerFactory.getLogger(ExpressionStandardModel.class);
+
     @Setter
     private boolean search = true;
 
@@ -47,7 +52,7 @@ public abstract class ExpressionStandardModel implements AbstractModel {
 
     public void search() throws IOException {
         int dataSize = totalDataContainer.getRawData().getFirst().getSize() - 1;
-        System.out.println("DATA SIZE: " + dataSize);
+        logger.info("DATA SIZE: {}", dataSize);
         this.generator = new ExpressGraphGenerator(30, 4, dataSize);
 
         if(this.haveTreeLimits) {
@@ -67,14 +72,11 @@ public abstract class ExpressionStandardModel implements AbstractModel {
             if(res != null) time = res;
 
             final TreeVertex vert = generator.generate(); // generate random graph
-
             final double result = this.tester.test(vert); // test
-            //byte[] bytes = vert.visit(); // change to bytes
 
-            final byte[] bytes = new byte[0];
-            this.foundRandomExpression(bytes, result, vert);
+            this.foundRandomExpression(result, vert);
             if(maxResult < result) {
-                this.foundResult(bytes, result, vert);
+                this.foundResult(result, vert);
                 maxResult = result;
             }
             iter++;
@@ -87,9 +89,9 @@ public abstract class ExpressionStandardModel implements AbstractModel {
         throw new RuntimeException("Unsupported!");
     }
 
-    public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundResult(double grade, TreeVertex vertex);
 
-    public abstract void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 
     public Long timeBehaviour(ExpressGraphGenerator generator, long time, int iter) {
@@ -98,7 +100,7 @@ public abstract class ExpressionStandardModel implements AbstractModel {
             if(generator.getVertexChance() < 36) {
                 generator.setVertexChance(generator.getVertexChance() + 1);
             }
-            System.out.println("Thinking... (Iteration: " + iter + ")");
+            logger.info("Thinking... (Iteration: {})", iter);
             return System.currentTimeMillis();
         }
         return null;

@@ -2,6 +2,8 @@ package pl.publicprojects.predictor.model.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
@@ -33,6 +35,8 @@ public abstract class PoolESVecModel implements AbstractModel {
     private boolean searching = true;
     private final boolean minTime;
 
+    private static final Logger logger = LoggerFactory.getLogger(PoolESVecModel.class);
+
     @Setter
     private boolean search = true;
 
@@ -58,28 +62,35 @@ public abstract class PoolESVecModel implements AbstractModel {
 
         this.helpfulModel = new ExpressionStandardModel(this.interpreter, this.totalDataContainer, this.helpfulModelTester) {
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 if(!searching) return;
                 gradeResult = grade;
-                System.out.println(System.currentTimeMillis() + " > " + (startTime + qualityTime));
-                System.out.println("res " + (System.currentTimeMillis() - (startTime + qualityTime)));
-                System.out.println("Grade " + grade);
+                logger.info("{} > {}", System.currentTimeMillis(), startTime + qualityTime);
+                logger.info("res {}", System.currentTimeMillis() - (startTime + qualityTime));
+                logger.info("Grade {}", grade);
                 searching = System.currentTimeMillis() < (startTime + qualityTime);
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundRandomExpression(double grade, TreeVertex vertex) {
                 if(minTime && searching) {
                     searching = System.currentTimeMillis() < (startTime + qualityTime);
                 }
                 if(!searching && grade >= gradeResult) {
-                    proxyDataContainer.getExpressionList().add(bytes);
+                    try {
+                        byte[] visitedBytes = vertex.visit();
+                        proxyDataContainer.getExpressionList().add(visitedBytes);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Something went wrong!");
+                    }
                     int size = proxyDataContainer.getExpressionList().size();
-                    System.out.println("Found expression " + size + " / " + amount);
-                    System.out.println("$" + (size + rawDataTableSize) + "$ = " +vertex.toString());
-                    System.out.println("Grade " + grade + " qualityGrade " + gradeResult);
+
+                    logger.info("Found expression {} / {}", size, amount);
+                    logger.info("${}$ = {}", size + rawDataTableSize, vertex.toString());
+                    logger.info("Grade {} qualityGrade {}", grade, gradeResult);
+
                     if(size >= amount) {
-                        System.out.println("Finished!");
+                        logger.info("Finished!");
                         this.setSearch(false);
                     }
                 }
@@ -92,13 +103,13 @@ public abstract class PoolESVecModel implements AbstractModel {
 
         this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer, this.mainModelTester) {
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
-                model.foundResult(bytes, grade, vertex);
+            public void foundResult(double grade, TreeVertex vertex) {
+                model.foundResult(grade, vertex);
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
-                model.foundRandomExpression(bytes, grade, vertex);
+            public void foundRandomExpression(double grade, TreeVertex vertex) {
+                model.foundRandomExpression(grade, vertex);
             }
 
             @Override
@@ -112,14 +123,6 @@ public abstract class PoolESVecModel implements AbstractModel {
         this.startTime = System.currentTimeMillis();
         this.helpfulModel.search();
         this.mainModel.search();
-    }
-
-    @Deprecated
-    private void debugInterpreter() {
-        System.out.println("DEBUGGING " + this.interpreter.getDataMap().size());
-        this.interpreter.getDataMap().forEach((i, data) -> {
-            System.out.println("NameId: " + i + " " + data);
-        });
     }
 
     @Override
@@ -137,9 +140,9 @@ public abstract class PoolESVecModel implements AbstractModel {
         return this.mainModel.getGenerator();
     }
 
-    public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundResult(double grade, TreeVertex vertex);
 
-    public abstract void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 }
 

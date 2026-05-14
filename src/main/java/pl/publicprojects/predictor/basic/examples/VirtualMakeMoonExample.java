@@ -24,7 +24,7 @@ import java.util.Scanner;
 
 public class VirtualMakeMoonExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download two moons dataset"; //"C:/Users/akmen/Desktop/Modell/Fildereq/MakeMoons/output.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download two moons dataset";
 
     public static void main(String[] args) throws Exception {
 
@@ -61,7 +61,7 @@ public class VirtualMakeMoonExample {
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
-                100,
+                200,
                 100,
                 false
         ) {
@@ -69,7 +69,7 @@ public class VirtualMakeMoonExample {
             private double max = 0;
 
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
                 try {
@@ -84,7 +84,7 @@ public class VirtualMakeMoonExample {
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(double grade, TreeVertex vertex) {}
 
             @Override
             public void loadData() throws Exception {

@@ -24,7 +24,8 @@ import java.util.Scanner;
 
 public class VirtualPoolESClusterExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";//"C:/Users/akmen/Desktop/helper/wynik.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
+    //"C:/Users/akmen/Desktop/helper/wynik.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -61,7 +62,7 @@ public class VirtualPoolESClusterExample {
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
-                200,
+                300,
                 10,
                 false
         ) {
@@ -69,7 +70,7 @@ public class VirtualPoolESClusterExample {
             private double max = 0;
 
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
                 try {
@@ -84,7 +85,7 @@ public class VirtualPoolESClusterExample {
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(double grade, TreeVertex vertex) {}
 
             @Override
             public void loadData() throws Exception {

@@ -62,7 +62,7 @@ public class RegularPartClusterExample {
         ) {
 
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 System.out.println("Founded...");
                 String code = vertex.toString();
 
@@ -76,7 +76,7 @@ public class RegularPartClusterExample {
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(double grade, TreeVertex vertex) {}
 
             @Override
             public void loadData() throws Exception {

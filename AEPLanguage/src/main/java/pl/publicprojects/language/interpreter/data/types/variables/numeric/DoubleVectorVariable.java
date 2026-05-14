@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.model.data.lang;
+package pl.publicprojects.language.interpreter.data.types.variables.numeric;
 
 import lombok.Getter;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -40,7 +40,6 @@ public class DoubleVectorVariable extends VariableData {
 
     @Override
     public void setValue(Object obj) throws IOException {
-        //System.out.println("test");
         if(obj instanceof DoubleVectorNumber number) {
             this.array = number.getValue();
             return;

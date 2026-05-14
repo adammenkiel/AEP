@@ -1,21 +1,17 @@
-LIGHT IDEAS:
-TODO: Mogę oczyścić śmieciowe słowa np. to for itd by polepszyć metodę comparingu
-TODO: Badania nad alternatywnymi modelami
-TODO: Funkcje na oczyszczonych zdaniach
-TODO: Różne warianty różnych funkcji
-TODO: Model wirusowy
-
-
 SERIOUS IDEAS:
-TODO: ZROBIĆ GENETYCZNĄ WERSJĘ ZNAJDOWANIA POPRAWNEGO WYNIKU
-TODO: ZAMKNĄĆ INTERPRETER
-TODO: DODAĆ MAXIMUM, MINIMUM
-TODO: DODAĆ FUNKCJĘ DECYZJI exp1 > 0 ? exp2 : exp3
+TODO: MAKE INTERPRETER THREAD-SAFE
+TODO: ADD MAXIMUM, MINIMUM
+TODO: ADD DECIDE FUNCTIONS: exp1 > 0 ? exp2 : exp3
 
 MAYBE SERIOUS IDEAS:
 TODO: MODEL GRAPH
-TODO: UPROSZCZANIE WYRAŻEŃ ALGEBRAICZNYCH
+TODO: SIMPLIFY ALGEBRAIC EXPRESSION
 
-
-NOWE:
-TODO: ZOPTYMALIZOWAĆ ALGORYTM
+TODO:
+tests,
+benchmarks,
+BETTER README,
+architecture diagram,
+cleanup of dead code,
+Bytecode injection
+Thread-safe

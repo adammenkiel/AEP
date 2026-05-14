@@ -2,6 +2,8 @@ package pl.publicprojects.predictor.model.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
@@ -19,9 +21,8 @@ import java.util.List;
 @Getter
 public abstract class RegularPoolModel implements AbstractModel {
 
-    private record SimpleResultContainer(byte[] bytes, double result, TreeVertex graph) {
-        private SimpleResultContainer(byte[] bytes, double result, TreeVertex graph) {
-            this.bytes = bytes;
+    private record SimpleResultContainer(double result, TreeVertex graph) {
+        private SimpleResultContainer(double result, TreeVertex graph) {
             this.result = result;
             this.graph = graph;
         }
@@ -35,6 +36,8 @@ public abstract class RegularPoolModel implements AbstractModel {
     private final List<SimpleResultContainer> analysedResults = new ArrayList<>();
     private ExpressGraphGenerator generator;
 
+    private static final Logger logger = LoggerFactory.getLogger(PoolESVecModel.class);
+
     @Setter
     private boolean search = true;
 
@@ -47,7 +50,7 @@ public abstract class RegularPoolModel implements AbstractModel {
 
     public void search() throws IOException {
         int dataSize = rawData.getFirst().getSize() - 1;
-        System.out.println("DATA SIZE: " + dataSize);
+        logger.info("DATA SIZE: {}", dataSize);
         this.generator = new ExpressGraphGenerator(30, 4, dataSize);
 
         for(int nameId = 0; nameId < dataSize; nameId++) {
@@ -65,17 +68,15 @@ public abstract class RegularPoolModel implements AbstractModel {
             if(res != null) time = res;
 
             TreeVertex vert = generator.generate(); // generate random graph
-            byte[] bytes = vert.visit(); // change to bytes
-            double result = this.tester.test(vert);//this.test(bytes); // test
+            double result = this.tester.test(vert);
 
-            this.foundRandomExpression(bytes, result, vert);
+            this.foundRandomExpression(result, vert);
             if(maxResult < result) {
-                this.analysedResults.add(new SimpleResultContainer(bytes, result, vert));
-                System.out.println("Expression found " + this.analysedResults.size() + " / " + this.partAmount);
+                this.analysedResults.add(new SimpleResultContainer(result, vert));
+                logger.info("Expression found {} / {}", this.analysedResults.size(), this.partAmount);
                 if(this.analysedResults.size() >= this.partAmount) {
                     for(var foundRes : this.analysedResults) {
                         this.foundResult(
-                                foundRes.bytes,
                                 foundRes.result,
                                 foundRes.graph
                         );
@@ -93,9 +94,9 @@ public abstract class RegularPoolModel implements AbstractModel {
         throw new RuntimeException("Unsupported!");
     }
 
-    public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundResult(double grade, TreeVertex vertex);
 
-    public abstract void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 
     public Long timeBehaviour(ExpressGraphGenerator generator, long time, int iter) {
@@ -104,7 +105,7 @@ public abstract class RegularPoolModel implements AbstractModel {
             if(generator.getVertexChance() < 36) {
                 generator.setVertexChance(generator.getVertexChance() + 1);
             }
-            System.out.println("Thinking... (Iteration: " + iter + ")");
+            logger.info("Thinking... (Iteration: " + iter + ")");
             return System.currentTimeMillis();
         }
         return null;

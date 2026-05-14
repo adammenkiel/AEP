@@ -47,6 +47,7 @@ public class ExpressGraphGenerator {
         return vertexList.get(random.nextInt(vertexList.size()));
     }
 
+    //TODO: REMOVE MAGIC
     private TreeVertex draw() {
         int a = random.nextInt(100);
 
@@ -56,25 +57,17 @@ public class ExpressGraphGenerator {
         int standardAlgebra = random.nextInt(3);
         if(standardAlgebra == 2) standardAlgebra = 3;
 
-        return switch(a) {
-            default -> {
-                if(a < chanceOne) yield new AlgebraicVertex(standardAlgebra);
-                if(a < chanceOne + chanceTwo) yield new NumberVertex(new DoubleNumber((random.nextInt(this.numberValues))));
-                yield new VariableVertex(random.nextInt(this.variablesAmount));
-            }
-        };
+        if(a < chanceOne) return new AlgebraicVertex(standardAlgebra);
+        if(a < chanceOne + chanceTwo) return new NumberVertex(new DoubleNumber((random.nextInt(this.numberValues))));
+        return new VariableVertex(random.nextInt(this.variablesAmount));
     }
 
     private TreeVertex drawEnd() {
         int a = random.nextInt(100);
         int chanceOne = vertexEndChance;
 
-        return switch(a) {
-            default -> {
-                if(a < chanceOne) yield new VariableVertex(random.nextInt(this.variablesAmount));
-                yield new NumberVertex(new DoubleNumber((random.nextInt(this.numberValues))));
-            }
-        };
+        if(a < chanceOne) return new VariableVertex(random.nextInt(this.variablesAmount));
+        return new NumberVertex(new DoubleNumber((random.nextInt(this.numberValues))));
     }
 
     public TreeVertex generate() {

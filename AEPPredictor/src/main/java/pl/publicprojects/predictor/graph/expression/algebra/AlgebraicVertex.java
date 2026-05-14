@@ -36,14 +36,13 @@ public class AlgebraicVertex extends TreeVertex {
     }
 
     private LanguageNumber<?> operation(LanguageNumber<?> a, LanguageNumber<?> b) {
-        //System.out.println("Oper " + a.getValue() + " " + b.getValue());
         return switch (operationId) {
             case 0 -> a.minus(b);
             case 1 -> a.plus(b);
             case 2 -> a.divide(b);
             case 3 -> a.multiple(b);
             case 4 -> a.power(b);
-            default -> throw new IllegalStateException("Unexpected value: " + operationId);
+            default -> throw new IllegalStateException("Unexpected operation: " + operationId);
         };
     }
 

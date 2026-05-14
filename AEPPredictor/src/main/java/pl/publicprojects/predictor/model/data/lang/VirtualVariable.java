@@ -42,6 +42,6 @@ public class VirtualVariable extends VariableData {
 
     @Override
     public void setValue(Object obj) throws IOException {
-        throw new RuntimeException("That metod isn't supported!");
+        throw new RuntimeException("That method isn't supported!");
     }
 }

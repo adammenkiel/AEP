@@ -62,13 +62,9 @@ public class GeneticClusterExample {
             private double max = 0;
 
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
-                /*System.out.println("Result: " +
-                        code.replace("$0$", "x")
-                                .replace("$1$", "y")
-                        + " grade: " + grade);*/
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
                         this.max = Math.max(this.max, grade);
@@ -81,7 +77,7 @@ public class GeneticClusterExample {
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(double grade, TreeVertex vertex) {}
 
             @Override
             public void loadData() throws Exception {

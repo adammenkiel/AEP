@@ -36,9 +36,6 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
         this.interpreter = interpreter;
     }
 
-    public void lag() {
-        while(true) {}
-    }
     @Override
     public double test(TreeVertex vert) throws IOException {
 
@@ -53,10 +50,7 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
         int fit = 0;
         int general = 0;
 
-        //System.out.println("Start");
-        int iter = 0;
         for (DataLineContainer info : totalDataContainer.getRawData()) {
-            //System.out.println("iter " + iter);
             final INDArray correctResult = ((DoubleVectorNumber) info.getRawData()[0]).getValue().gt(0);
 
             info.update(this.getVariables());
@@ -64,17 +58,9 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
             final INDArray guessResult = resultVectorValue.gt(0);
             final INDArray gradeVector = Transforms.xor(correctResult, guessResult);
 
-            /*System.out.println("Result vec value " + resultVectorValue);
-            System.out.println("guess res " + guessResult);
-            System.out.println("grade vec " + gradeVector);
-            */
             fit += (int) gradeVector.length() - gradeVector.castTo(DataType.INT32).sumNumber().intValue();
             general += (int) gradeVector.length();
-            //System.out.println(fit + " / " + general);
-            iter++;
         }
-        //System.out.println("End" + ((double)fit / (double) general));
-        //this.lag();
         return (double)fit / (double) general;
     }
 }

@@ -2,6 +2,8 @@ package pl.publicprojects.predictor.model.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
@@ -29,6 +31,8 @@ public abstract class StaticPoolESModel implements AbstractModel {
     private final double gradeResult;
     private int rawDataTableSize = -1;
 
+    private static final Logger logger = LoggerFactory.getLogger(StandardModel.class);
+
     @Setter
     private boolean search = true;
 
@@ -51,19 +55,23 @@ public abstract class StaticPoolESModel implements AbstractModel {
 
         this.helpfulModel = new StandardModel(this.interpreter, this.totalDataContainer, this.helpfulModelTester) {
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {}
+            public void foundResult(double grade, TreeVertex vertex) {}
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundRandomExpression(double grade, TreeVertex vertex) {
                 if(grade >= gradeResult) {
-                    proxyDataContainer.getExpressionList().add(bytes);
+                    try {
+                        proxyDataContainer.getExpressionList().add(vertex.visit());
+                    } catch (Exception e) {
+                        throw new RuntimeException("Something went wrong!");
+                    }
 
                     int size = proxyDataContainer.getExpressionList().size();
-                    System.out.println("Found expression " + size + " / " + amount);
-                    System.out.println("$" + (size + rawDataTableSize) + "$ = " +vertex.toString());
-                    System.out.println("Grade " + grade + " qualityGrade " + gradeResult);
+                    logger.info("Found expression {} / {}", size, amount);
+                    logger.info("${}$ = {}", size + rawDataTableSize, vertex.toString());
+                    logger.info("Grade {} qualityGrade {}", grade, gradeResult);
                     if(size >= amount) {
-                        System.out.println("Finished!");
+                        logger.info("Finished!");
                         this.setSearch(false);
                     }
                 }
@@ -76,13 +84,13 @@ public abstract class StaticPoolESModel implements AbstractModel {
 
         this.mainModel = new ExpressionStandardModel(interpreter, this.totalDataContainer, this.mainModelTester) {
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
-                model.foundResult(bytes, grade, vertex);
+            public void foundResult(double grade, TreeVertex vertex) {
+                model.foundResult(grade, vertex);
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
-                model.foundRandomExpression(bytes, grade, vertex);
+            public void foundRandomExpression(double grade, TreeVertex vertex) {
+                model.foundRandomExpression(grade, vertex);
             }
 
             @Override
@@ -95,17 +103,9 @@ public abstract class StaticPoolESModel implements AbstractModel {
     public void search() throws IOException {
         this.startTime = System.currentTimeMillis();
         this.helpfulModel.search();
-        this.debugInterpreter();
         this.mainModel.search();
     }
 
-    private void debugInterpreter() {
-        //this.interpreter.get
-        System.out.println("DEBUGGING " + this.interpreter.getDataMap().size());
-        this.interpreter.getDataMap().forEach((i, data) -> {
-            System.out.println("NameId: " + i + " " + data);
-        });
-    }
 
     @Override
     public double test(byte[] bytes) throws IOException {
@@ -122,8 +122,8 @@ public abstract class StaticPoolESModel implements AbstractModel {
         return this.mainModel.getGenerator();
     }
 
-    public abstract void foundResult(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundResult(double grade, TreeVertex vertex);
 
-    public abstract void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex);
+    public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 }

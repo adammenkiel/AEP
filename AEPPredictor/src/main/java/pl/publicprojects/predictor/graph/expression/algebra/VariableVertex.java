@@ -13,7 +13,7 @@ import java.io.IOException;
 @Getter
 public class VariableVertex extends TreeVertex {
 
-    private int nameId;
+    private final int nameId;
 
     public VariableVertex(int nameId) {
         this.nameId = nameId;

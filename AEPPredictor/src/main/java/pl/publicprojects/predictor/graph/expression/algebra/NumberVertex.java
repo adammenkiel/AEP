@@ -12,7 +12,7 @@ import java.io.IOException;
 @Getter
 public class NumberVertex extends TreeVertex {
 
-    private LanguageNumber<?> number;
+    private final LanguageNumber<?> number;
 
     public NumberVertex(LanguageNumber<?> number) {
         this.number = number;

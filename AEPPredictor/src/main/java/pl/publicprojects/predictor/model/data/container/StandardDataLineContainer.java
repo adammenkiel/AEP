@@ -83,11 +83,6 @@ public class StandardDataLineContainer implements DataLineContainer {
             VariableData variable = this.totalDataContainer.createVariable(variables.size());
             variable.execute();
             variables.add(variable);
-
-            /*new DoubleVariable(variables.size());
-            variable.execute();
-            variable.setValue(new DoubleNumber(0));
-            variables.add(variable);*/
         }
 
         if(!freezeValues) {

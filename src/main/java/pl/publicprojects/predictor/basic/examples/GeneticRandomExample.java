@@ -59,7 +59,7 @@ public class GeneticRandomExample {
             private double max = 0;
 
             @Override
-            public void foundResult(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
 
                 try {
@@ -75,7 +75,7 @@ public class GeneticRandomExample {
             }
 
             @Override
-            public void foundRandomExpression(byte[] bytes, double grade, TreeVertex vertex) {
+            public void foundRandomExpression(double grade, TreeVertex vertex) {
             }
 
             @Override
