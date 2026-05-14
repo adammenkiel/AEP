@@ -82,7 +82,7 @@ public abstract class PoolESVecModel implements AbstractModel {
                         byte[] visitedBytes = vertex.visit();
                         proxyDataContainer.getExpressionList().add(visitedBytes);
                     } catch (Exception e) {
-                        throw new RuntimeException("Something went wrong!");
+                        throw new RuntimeException("Something went wrong!", e);
                     }
                     int size = proxyDataContainer.getExpressionList().size();
 

@@ -79,7 +79,9 @@ public class RegularPartClusterExample {
                     this.logger.info("Grade: {}", grade);
                     this.logger.info("${}$ = {}", this.getRawData().getFirst().getRawData().length + container.getExpressionList().size() - 2, code);
 
-                } catch (Exception ignored) {}
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override

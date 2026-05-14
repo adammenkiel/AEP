@@ -64,7 +64,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
                     try {
                         proxyDataContainer.getExpressionList().add(vertex.visit());
                     } catch (Exception e) {
-                        throw new RuntimeException("Something went wrong!");
+                        throw new RuntimeException("Something went wrong!", e);
                     }
 
                     int size = proxyDataContainer.getExpressionList().size();

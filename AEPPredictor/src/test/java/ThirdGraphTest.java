@@ -26,7 +26,9 @@ public class ThirdGraphTest {
                         .getResult(bytes)
                         .getValue();
                 max.set(Math.max(max.get(), Math.pow((value - resultValue), 2)));
-            } catch (IOException ignored) {}
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
         return max.get();
     }
@@ -75,7 +77,9 @@ public class ThirdGraphTest {
                         .getResult(bytes)
                         .getValue();
                 sum.set(sum.get() + Math.abs(value - Math.floor(resultValue/Math.log(resultValue))));
-            } catch (IOException ignored) {}
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
         return sum.get();
     }

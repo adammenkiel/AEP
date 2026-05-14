@@ -32,6 +32,7 @@ public class VirtualMakeMoonExample {
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
+
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
@@ -82,7 +83,9 @@ public class VirtualMakeMoonExample {
                         this.logger.info("Grade: {}", grade);
                         this.logger.info("${}$ = {}", container.getVariables().size(), code);
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override

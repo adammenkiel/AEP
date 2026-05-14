@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic;
+package pl.publicprojects.predictor.basic.refactor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +13,18 @@ import java.util.Scanner;
  */
 public class RefactorClass {
     public static void main(String[] args) {
+        System.out.println("Running... Please type output of Model Example from /examples/ and write `end` to get the result expression.");
+
         Scanner s = new Scanner(System.in);
         List<String[]> lines = new ArrayList<>();
         while(s.hasNextLine()) {
             String abc = s.nextLine();
             if(abc.equalsIgnoreCase("end")) break;
+            abc = abc.substring(abc.indexOf(" - ") + 3); // remove logger message
             if(!abc.contains(" = ")) continue;
             lines.add(abc.split(" = "));
         }
+
         for(int i = 0; i < lines.size(); i++) {
             String[] lab = lines.get(i);
 

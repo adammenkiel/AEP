@@ -75,7 +75,9 @@ public class GeneticClusterExample {
                         this.logger.info("Grade: {}", grade);
                         this.logger.info("${}$ = {}", container.getVariables().size(), code);
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override

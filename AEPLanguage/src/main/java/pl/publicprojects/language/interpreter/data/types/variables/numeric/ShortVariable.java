@@ -38,8 +38,9 @@ public class ShortVariable extends VariableData {
             final short res = languageInputStream.readShort();
             languageInputStream.close();
             return new DoubleNumber(res);
-        } catch (Exception ignored) {}
-        return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

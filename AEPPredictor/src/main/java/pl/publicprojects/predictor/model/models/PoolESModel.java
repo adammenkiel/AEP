@@ -65,9 +65,8 @@ public abstract class PoolESModel implements AbstractModel {
             public void foundResult(double grade, TreeVertex vertex) {
                 if(!searching) return;
                 gradeResult = grade;
-                logger.info("{} > {}", System.currentTimeMillis(), startTime + qualityTime);
-                logger.info("res {}", System.currentTimeMillis() - (startTime + qualityTime));
-                logger.info("Grade {}", grade);
+                logger.info("Change minimum score to: {}", grade);
+                logger.info("Continue searching: {}", !(System.currentTimeMillis() - (startTime + qualityTime) > 0));
                 searching = System.currentTimeMillis() < (startTime + qualityTime);
             }
 
@@ -80,7 +79,7 @@ public abstract class PoolESModel implements AbstractModel {
                     try {
                         proxyDataContainer.getExpressionList().add(vertex.visit());
                     } catch (Exception e) {
-                        throw new RuntimeException("Something went wrong!");
+                        throw new RuntimeException("Something went wrong!", e);
                     }
 
                     int size = proxyDataContainer.getExpressionList().size();

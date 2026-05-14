@@ -37,8 +37,9 @@ public class LongVariable extends VariableData {
             ByteArrayInputStream bais = new ByteArrayInputStream(this.getData());
             LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bais);
             return new DoubleNumber(languageInputStream.readLong());
-        } catch (Exception ignored) {}
-        return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

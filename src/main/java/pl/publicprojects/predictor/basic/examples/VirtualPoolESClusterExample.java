@@ -45,7 +45,7 @@ public class VirtualPoolESClusterExample {
             }
 
             @Override
-            public VariableData createVariable(int nameId) throws IOException {
+            public VariableData createVariable(int nameId) {
                 VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
@@ -73,7 +73,6 @@ public class VirtualPoolESClusterExample {
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
-
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
                         this.max = Math.max(this.max, grade);
@@ -82,7 +81,9 @@ public class VirtualPoolESClusterExample {
                         this.logger.info("Grade: {}", grade);
                         this.logger.info("${}$ = {}", container.getVariables().size(), code);
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override

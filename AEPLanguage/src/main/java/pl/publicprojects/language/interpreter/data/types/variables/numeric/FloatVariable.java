@@ -33,11 +33,12 @@ public class FloatVariable extends VariableData {
     @Override
     public Object getValue() {
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(this.getData());
-            LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bais);
+            ByteArrayInputStream byteArrayStream = new ByteArrayInputStream(this.getData());
+            LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, byteArrayStream);
             return new DoubleNumber(languageInputStream.readFloat());
-        } catch (Exception ignored) {}
-        return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
