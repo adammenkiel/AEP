@@ -11,6 +11,12 @@ import java.io.IOException;
 @Getter
 public class WhileData extends LanguageData {
 
+    private final Interpreter interpreter;
+
+    public WhileData(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
     private byte[] conditionData;
     private byte[] conditionAccepted;
 
@@ -27,14 +33,14 @@ public class WhileData extends LanguageData {
 
     @Override
     public void execute() throws IOException {
-        final Interpreter interpreter = Interpreter.getInst();
 
         while(
-                interpreter.getBooleanExpressionManager()
+                this.interpreter.getBooleanExpressionManager()
                     .getResult(this.conditionData)
         )
-            interpreter.start(
+            this.interpreter.start(
                     new LanguageInputStream(
+                            this.interpreter,
                             new ByteArrayInputStream(
                                     this.conditionAccepted
                             )

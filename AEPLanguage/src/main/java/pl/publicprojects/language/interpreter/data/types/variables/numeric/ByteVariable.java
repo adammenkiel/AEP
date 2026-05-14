@@ -9,6 +9,13 @@ import java.io.IOException;
 
 
 public class ByteVariable extends VariableData {
+
+    private final Interpreter interpreter;
+
+    public ByteVariable(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
     @Override
     public int getId() {
         return 1;
@@ -16,7 +23,7 @@ public class ByteVariable extends VariableData {
 
     @Override
     public void execute() {
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override

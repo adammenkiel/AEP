@@ -12,7 +12,7 @@ public class InterpreterInputStream extends LanguageInputStream{
     private final Interpreter interpreter;
 
     public InterpreterInputStream(Interpreter interpreter, InputStream in) {
-        super(in);
+        super(interpreter, in);
         this.interpreter = interpreter;
     }
 }

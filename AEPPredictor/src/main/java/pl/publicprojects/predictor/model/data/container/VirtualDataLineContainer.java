@@ -1,6 +1,7 @@
 package pl.publicprojects.predictor.model.data.container;
 
 import lombok.Getter;
+import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
@@ -13,13 +14,21 @@ import java.util.List;
 
 @Getter
 public class VirtualDataLineContainer implements DataLineContainer {
+
+    private final Interpreter interpreter;
     private final LanguageNumber<?>[] rawData;
     private final ProxyDataLineContainer proxyDataContainer;
     private final DataPointer dataPointer;
 
     private final List<LanguageNumber<?>> frozenValues = new ArrayList<>();
 
-    public VirtualDataLineContainer(LanguageNumber<?>[] rawData, ProxyDataLineContainer proxyDataContainer, DataPointer dataPointer) {
+    public VirtualDataLineContainer(
+            Interpreter interpreter,
+            LanguageNumber<?>[] rawData,
+            ProxyDataLineContainer proxyDataContainer,
+            DataPointer dataPointer
+    ) {
+        this.interpreter = interpreter;
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
         this.dataPointer = dataPointer;
@@ -45,7 +54,7 @@ public class VirtualDataLineContainer implements DataLineContainer {
         this.dataPointer.setPointerContainer(this); // rawUpdate
 
         while(this.getSize() - 1 > variables.size()) {
-            VirtualVariable variable = new VirtualVariable(variables.size(), this.dataPointer);
+            VirtualVariable variable = new VirtualVariable(this.interpreter, variables.size(), this.dataPointer);
             variable.execute();
             variables.add(variable);
         }

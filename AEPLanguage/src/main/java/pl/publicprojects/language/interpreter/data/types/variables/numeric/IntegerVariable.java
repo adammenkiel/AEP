@@ -11,10 +11,15 @@ import java.io.IOException;
 
 public class IntegerVariable extends VariableData {
 
-    public IntegerVariable() {}
+    private final Interpreter interpreter;
 
-    public IntegerVariable(int nameId) {
+    public IntegerVariable(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
+    public IntegerVariable(Interpreter interpreter, int nameId) {
         this.setNameId(nameId);
+        this.interpreter = interpreter;
     }
 
     @Override
@@ -24,8 +29,7 @@ public class IntegerVariable extends VariableData {
 
     @Override
     public void execute() {
-        //Interpreter.getInst() execute save
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override
@@ -45,6 +49,8 @@ public class IntegerVariable extends VariableData {
             DataOutputStream dIntegerStream = new DataOutputStream(integerBytesStream);
             dIntegerStream.writeInt(integer);
             this.setData(integerBytesStream.toByteArray());
+            integerBytesStream.close();
+            dIntegerStream.close();
         } else throw new RuntimeException("Another types isn't supported");
     }
 

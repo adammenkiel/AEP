@@ -60,7 +60,7 @@ public class BooleanExpressionManager {
             // another expression
             byte[] bytes = languageInputStream.readBytesTable();
             ByteArrayInputStream expressionStream = new ByteArrayInputStream(bytes);
-            LanguageInputStream lExpressionStream = new LanguageInputStream(expressionStream);
+            LanguageInputStream lExpressionStream = new LanguageInputStream(this.interpreter, expressionStream);
             return this.parse(lExpressionStream);
         }
         if(typeId == 3) {
@@ -98,7 +98,7 @@ public class BooleanExpressionManager {
     }
     public boolean getResult(byte[] expression) throws IOException {
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(expression);
-        LanguageInputStream languageInputStream = new LanguageInputStream(bytesStream);
+        LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bytesStream);
         return this.parse(languageInputStream);
     }
 }

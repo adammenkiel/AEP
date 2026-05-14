@@ -17,8 +17,10 @@ import java.util.List;
 public class DoubleVectorVariable extends VariableData {
 
     private INDArray array;
+    private final Interpreter interpreter;
 
-    public DoubleVectorVariable(int nameId, List<Double> doubleVector) {
+    public DoubleVectorVariable(Interpreter interpreter, int nameId, List<Double> doubleVector) {
+        this.interpreter = interpreter;
         this.setNameId(nameId);
         this.array = Nd4j.create(doubleVector);
     }
@@ -30,7 +32,7 @@ public class DoubleVectorVariable extends VariableData {
 
     @Override
     public void execute() {
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override

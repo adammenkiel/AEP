@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 public class StandardDataLineContainer implements DataLineContainer {
 
-    private TotalDataContainer totalDataContainer;
+    private final TotalDataContainer totalDataContainer;
     private final LanguageNumber<?>[] rawData;
     private final ProxyDataLineContainer proxyDataContainer;
 
@@ -31,7 +31,11 @@ public class StandardDataLineContainer implements DataLineContainer {
     * @param rawData Standard dataSet that we load at the start
     * @param proxyDataContainer While model running, we can add new, good-scored expression for generating better results
     */
-    public StandardDataLineContainer(TotalDataContainer totalDataContainer, LanguageNumber<?>[] rawData, ProxyDataLineContainer proxyDataContainer) {
+    public StandardDataLineContainer(
+            TotalDataContainer totalDataContainer,
+            LanguageNumber<?>[] rawData,
+            ProxyDataLineContainer proxyDataContainer
+    ) {
         this.totalDataContainer = totalDataContainer;
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
@@ -43,10 +47,12 @@ public class StandardDataLineContainer implements DataLineContainer {
     * @param freezeValues If freezeValues=true you can't update old proxyValues by very easy way
     */
     public StandardDataLineContainer(
+            TotalDataContainer totalDataContainer,
             LanguageNumber<?>[] rawData,
             ProxyDataLineContainer proxyDataContainer,
             boolean freezeValues
     ) {
+        this.totalDataContainer = totalDataContainer;
         this.rawData = rawData;
         this.proxyDataContainer = proxyDataContainer;
         this.freezeValues = freezeValues;

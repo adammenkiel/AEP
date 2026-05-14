@@ -12,6 +12,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class ShortVariable extends VariableData {
+
+    private final Interpreter interpreter;
+
+    public ShortVariable(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
     @Override
     public int getId() {
         return 2;
@@ -20,15 +27,17 @@ public class ShortVariable extends VariableData {
     @Override
     public void execute() {
         this.setExecuted(true);
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override
     public Object getValue() {
         try {
-            ByteArrayInputStream bais = new ByteArrayInputStream(this.getData());
-            LanguageInputStream languageInputStream = new LanguageInputStream(bais);
-            return new DoubleNumber(languageInputStream.readShort());
+            ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(this.getData());
+            LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, arrayInputStream);
+            final short res = languageInputStream.readShort();
+            languageInputStream.close();
+            return new DoubleNumber(res);
         } catch (Exception ignored) {}
         return null;
     }
@@ -41,6 +50,8 @@ public class ShortVariable extends VariableData {
             DataOutputStream dIntegerStream = new DataOutputStream(integerBytesStream);
             dIntegerStream.writeShort(integer);
             this.setData(integerBytesStream.toByteArray());
+            integerBytesStream.close();
+            dIntegerStream.close();
         } else throw new RuntimeException("Another types isn't supported");
     }
 }

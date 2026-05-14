@@ -25,7 +25,6 @@ import java.util.Scanner;
 public class VirtualPoolESClusterExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
-    //"C:/Users/akmen/Desktop/helper/wynik.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -37,7 +36,7 @@ public class VirtualPoolESClusterExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                     variable.execute();
                     list.add(variable);
                 }
@@ -46,7 +45,7 @@ public class VirtualPoolESClusterExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
             }
@@ -62,7 +61,7 @@ public class VirtualPoolESClusterExample {
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
-                300,
+                100,
                 10,
                 false
         ) {
@@ -101,7 +100,7 @@ public class VirtualPoolESClusterExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.addData(new VirtualDataLineContainer(numberTable, container, pointer));
+                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
                 }
             }
         };

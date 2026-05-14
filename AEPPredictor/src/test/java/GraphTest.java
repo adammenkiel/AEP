@@ -21,7 +21,7 @@ public class GraphTest {
     public static void main(String[] args) throws IOException {
         Interpreter i = new Interpreter();
 
-        IntegerVariable var = new IntegerVariable(0);
+        IntegerVariable var = new IntegerVariable(i, 0);
         var.setValue(new IntegerNumber(100));
         var.execute();
 

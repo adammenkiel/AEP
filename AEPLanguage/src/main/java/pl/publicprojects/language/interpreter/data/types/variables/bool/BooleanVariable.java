@@ -4,6 +4,13 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 
 public class BooleanVariable extends VariableData {
+
+    private final Interpreter interpreter;
+
+    public BooleanVariable(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
     @Override
     public int getId() {
         return 0;
@@ -11,7 +18,7 @@ public class BooleanVariable extends VariableData {
 
     @Override
     public void execute() {
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+       this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override

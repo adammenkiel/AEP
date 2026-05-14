@@ -37,7 +37,7 @@ public class VirtualGeneticDiabetesDBExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                     variable.execute();
                     list.add(variable);
                 }
@@ -45,7 +45,7 @@ public class VirtualGeneticDiabetesDBExample {
             }
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
             }
@@ -114,7 +114,7 @@ public class VirtualGeneticDiabetesDBExample {
                     numberTable[7] = new DoubleNumber(a7);
                     numberTable[8] = new DoubleNumber(a8);
 
-                    super.addData(new VirtualDataLineContainer(numberTable, container, pointer));
+                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
                     //super.getTotalDataContainer().getRawData().add(new VirtualDataLineContainer(numberTable, container, pointer));
                 }
             }

@@ -54,7 +54,7 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
             final INDArray correctResult = ((DoubleVectorNumber) info.getRawData()[0]).getValue().gt(0);
 
             info.update(this.getVariables());
-            final INDArray resultVectorValue = (INDArray) vert.getValue().plus(this.idx).getValue();
+            final INDArray resultVectorValue = (INDArray) vert.getValue(this.interpreter).plus(this.idx).getValue();
             final INDArray guessResult = resultVectorValue.gt(0);
             final INDArray gradeVector = Transforms.xor(correctResult, guessResult);
 

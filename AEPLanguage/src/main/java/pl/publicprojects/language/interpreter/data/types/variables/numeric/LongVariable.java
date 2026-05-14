@@ -13,6 +13,13 @@ import java.io.IOException;
 
 
 public class LongVariable extends VariableData {
+
+    private final Interpreter interpreter;
+
+    public LongVariable(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
     @Override
     public int getId() {
         return 4;
@@ -21,14 +28,14 @@ public class LongVariable extends VariableData {
     @Override
     public void execute() {
         this.setExecuted(true);
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override
     public Object getValue() {
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream(this.getData());
-            LanguageInputStream languageInputStream = new LanguageInputStream(bais);
+            LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bais);
             return new DoubleNumber(languageInputStream.readLong());
         } catch (Exception ignored) {}
         return null;

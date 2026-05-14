@@ -11,6 +11,11 @@ import java.io.IOException;
 public class PrintData extends LanguageData {
 
     private int nameId;
+    private final Interpreter interpreter;
+
+    public PrintData(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
 
     @Override
     public int getId() {
@@ -25,7 +30,7 @@ public class PrintData extends LanguageData {
     @Override
     public void execute() throws IOException {
         System.out.println(
-                Interpreter.getInst()
+                this.interpreter
                         .getCurrentVariableByNameId(this.nameId)
                         .getValue()
         );

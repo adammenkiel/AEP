@@ -13,9 +13,15 @@ import java.io.IOException;
 
 public class DoubleVariable extends VariableData {
 
-    public DoubleVariable() {}
 
-    public DoubleVariable(int nameId) {
+    private final Interpreter interpreter;
+
+    public DoubleVariable(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
+
+    public DoubleVariable(Interpreter interpreter, int nameId) {
+        this.interpreter = interpreter;
         this.setNameId(nameId);
     }
 
@@ -27,14 +33,14 @@ public class DoubleVariable extends VariableData {
     @Override
     public void execute() {
         this.setExecuted(true);
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override
     public Object getValue() {
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream(this.getData());
-            LanguageInputStream languageInputStream = new LanguageInputStream(bais);
+            LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bais);
             return new DoubleNumber(languageInputStream.readDouble());
         } catch (Exception ignored) {}
         return null;

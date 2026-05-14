@@ -50,7 +50,7 @@ public class AlgebraicExpressionManager {
 
     public LanguageNumber<?> getResult(byte[] expression) throws IOException {
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(expression);
-        LanguageInputStream languageInputStream = new LanguageInputStream(bytesStream);
+        LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bytesStream);
         return this.parse(languageInputStream);
     }
 
@@ -60,7 +60,7 @@ public class AlgebraicExpressionManager {
         if(typeId == 0) {
             byte[] bytes = languageInputStream.readBytesTable();
             ByteArrayInputStream numberStream = new ByteArrayInputStream(bytes);
-            LanguageInputStream lNumberStream = new LanguageInputStream(numberStream);
+            LanguageInputStream lNumberStream = new LanguageInputStream(this.interpreter, numberStream);
             byte numberType = lNumberStream.readByte(); // type of number
             numberFirst = this.getLangNumberByID(numberType);
             numberFirst.read(lNumberStream);
@@ -76,7 +76,7 @@ public class AlgebraicExpressionManager {
             byte[] bytes = new byte[len];
             languageInputStream.readFully(bytes);
             ByteArrayInputStream expressionStream = new ByteArrayInputStream(bytes);
-            LanguageInputStream lExpressionStream = new LanguageInputStream(expressionStream);
+            LanguageInputStream lExpressionStream = new LanguageInputStream(this.interpreter, expressionStream);
             numberFirst = this.parse(lExpressionStream);
         }
         return numberFirst;

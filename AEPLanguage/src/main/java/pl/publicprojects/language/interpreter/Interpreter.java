@@ -21,10 +21,6 @@ import java.util.Map;
 @Getter
 public class Interpreter {
 
-    @Getter
-    @Deprecated
-    private static Interpreter inst;
-
     private final Map<Integer, LanguageData> dataMap = new HashMap<>(); // Global data list
 
     private final Map<Integer, VariableData> variableTypes = new HashMap<>(); // maybe will be deleted
@@ -34,7 +30,6 @@ public class Interpreter {
     private final BooleanExpressionManager booleanExpressionManager;
 
     public Interpreter() {
-        inst = this; // Temp. option
         this.algebraicExpressionManager = new AlgebraicExpressionManager(this);
         this.booleanExpressionManager = new BooleanExpressionManager(this);
     }
@@ -77,17 +72,17 @@ public class Interpreter {
      */
     public void run(final LanguageInputStream stream) throws IOException {
         this.registerData(
-                new ByteVariable(),
-                new ShortVariable(),
-                new IntegerVariable(),
-                new LongVariable(),
-                new FloatVariable(),
-                new DoubleVariable(),
-                new BooleanVariable(),
-                new ModifyVariableData(),
-                new ConditionData(),
-                new WhileData(),
-                new PrintData()
+                new ByteVariable(this),
+                new ShortVariable(this),
+                new IntegerVariable(this),
+                new LongVariable(this),
+                new FloatVariable(this),
+                new DoubleVariable(this),
+                new BooleanVariable(this),
+                new ModifyVariableData(this),
+                new ConditionData(this),
+                new WhileData(this),
+                new PrintData(this)
         );
         this.start(stream);
     }

@@ -1,6 +1,7 @@
 package pl.publicprojects.predictor.graph.expression.algebra;
 
 import lombok.Getter;
+import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.*;
 import pl.publicprojects.language.interpreter.stream.LanguageOutputStream;
@@ -44,7 +45,7 @@ public class NumberVertex extends TreeVertex {
     }
 
     @Override
-    public LanguageNumber<?> getValue() {
+    public LanguageNumber<?> getValue(Interpreter interpreter) {
         return this.number;
     }
 }

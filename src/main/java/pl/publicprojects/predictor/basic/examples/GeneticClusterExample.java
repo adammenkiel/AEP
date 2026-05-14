@@ -33,7 +33,7 @@ public class GeneticClusterExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    DoubleVariable variable = new DoubleVariable(nameId);
+                    DoubleVariable variable = new DoubleVariable(interpreter, nameId);
                     variable.execute();
                     list.add(variable);
                 }
@@ -42,7 +42,7 @@ public class GeneticClusterExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                DoubleVariable variable = new DoubleVariable(nameId);
+                DoubleVariable variable = new DoubleVariable(interpreter, nameId);
                 variable.execute();
                 variable.setValue(new DoubleNumber(0));
                 return variable;

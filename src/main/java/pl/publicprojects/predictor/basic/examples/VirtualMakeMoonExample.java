@@ -24,7 +24,7 @@ import java.util.Scanner;
 
 public class VirtualMakeMoonExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download two moons dataset";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/Modell/Fildereq/MakeMoons/output.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -36,7 +36,7 @@ public class VirtualMakeMoonExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                     variable.execute();
                     list.add(variable);
                 }
@@ -45,7 +45,7 @@ public class VirtualMakeMoonExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
             }
@@ -100,7 +100,7 @@ public class VirtualMakeMoonExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.addData(new VirtualDataLineContainer(numberTable, container, pointer));
+                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
                 }
             }
         };

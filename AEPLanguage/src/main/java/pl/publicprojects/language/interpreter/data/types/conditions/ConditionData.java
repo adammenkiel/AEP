@@ -13,6 +13,12 @@ public class ConditionData extends LanguageData {
     private byte[] conditionData;
     private LanguageInputStream conditionAccepted;
     private LanguageInputStream conditionFailed;
+    private final Interpreter interpreter;
+
+
+    public ConditionData(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
 
     @Override
     public int getId() {
@@ -28,7 +34,7 @@ public class ConditionData extends LanguageData {
 
     @Override
     public void execute() throws IOException {
-        final Interpreter interpreter = Interpreter.getInst();
+        final Interpreter interpreter = this.interpreter;
 
         boolean condition = interpreter.getBooleanExpressionManager()
                 .getResult(this.conditionData);

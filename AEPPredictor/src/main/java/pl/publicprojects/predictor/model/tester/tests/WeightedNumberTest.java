@@ -48,7 +48,7 @@ public class WeightedNumberTest implements AbstractTester<TreeVertex> {
 
             info.update(this.getVariables());
 
-            double resultDoubleValue = (double) vert.getValue().getValue();
+            double resultDoubleValue = (double) vert.getValue(this.interpreter).getValue();
 
             boolean guessResult = resultDoubleValue > 0;
 

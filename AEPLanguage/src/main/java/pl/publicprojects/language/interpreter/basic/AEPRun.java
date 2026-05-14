@@ -20,12 +20,12 @@ public class AEPRun {
             String fileName = args[0];
             File file = new File(fileName);
             Interpreter interpreter = new Interpreter();
-            interpreter.run(new LanguageInputStream(new FileInputStream(file)));
+            interpreter.run(new LanguageInputStream(interpreter, new FileInputStream(file)));
         } else {
             String fileName = "AEPPublic/programs/five.aep";
             File file = new File(fileName);
             Interpreter interpreter = new Interpreter();
-            interpreter.run(new LanguageInputStream(new FileInputStream(file)));
+            interpreter.run(new LanguageInputStream(interpreter, new FileInputStream(file)));
             System.out.println("size: " + interpreter.getCurrentVariables().size());
             System.out.println("name: " + interpreter.getCurrentVariables().get(0).getNameId());
             System.out.println("value: " + interpreter.getCurrentVariables().get(0).getValue());

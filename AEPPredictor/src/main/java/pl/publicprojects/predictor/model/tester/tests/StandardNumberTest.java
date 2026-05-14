@@ -38,7 +38,7 @@ public class StandardNumberTest implements AbstractTester<TreeVertex> {
             final boolean correctResult = ((IntegerNumber) info.getRawData()[0]).getValue() == 1;
 
             info.update(this.getVariables());
-            final double resultDoubleValue = (double) vert.getValue().getValue();
+            final double resultDoubleValue = (double) vert.getValue(this.interpreter).getValue();
             final boolean guessResult = resultDoubleValue > 0;
             if (guessResult == correctResult)
                 fit += 1;

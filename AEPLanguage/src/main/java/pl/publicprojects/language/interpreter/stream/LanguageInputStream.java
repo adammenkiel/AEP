@@ -1,5 +1,6 @@
 package pl.publicprojects.language.interpreter.stream;
 
+import lombok.Getter;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.LanguageData;
 
@@ -11,11 +12,14 @@ import java.io.InputStream;
 public class LanguageInputStream extends DataInputStream {
 
 
+    private Interpreter interpreter;
+
     /**
      * @param in Input Stream that we will work with.
      */
-    public LanguageInputStream(InputStream in) {
+    public LanguageInputStream(Interpreter interpreter, InputStream in) {
         super(in);
+        this.interpreter = interpreter;
     }
 
     /**
@@ -30,9 +34,9 @@ public class LanguageInputStream extends DataInputStream {
         this.readFully(data);
 
         // Maybe memory leaks, need to close one
-        LanguageData lData = Interpreter.getInst().getDataById(id);
+        LanguageData lData = this.interpreter.getDataById(id);
         ByteArrayInputStream dataStream = new ByteArrayInputStream(data);
-        LanguageInputStream languageStream = new LanguageInputStream(dataStream);
+        LanguageInputStream languageStream = new LanguageInputStream(this.interpreter, dataStream);
         lData.define(languageStream);
         languageStream.close();
         dataStream.close();
@@ -49,7 +53,7 @@ public class LanguageInputStream extends DataInputStream {
         byte[] bytes = new byte[len];
         this.readFully(bytes);
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(bytes);
-        return new LanguageInputStream(bytesStream);
+        return new LanguageInputStream(this.interpreter, bytesStream);
     }
 
     /**

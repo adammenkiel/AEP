@@ -11,6 +11,7 @@ import pl.publicprojects.language.interpreter.data.types.variables.numeric.Doubl
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 import pl.publicprojects.predictor.model.AbstractModel;
+import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.tester.AbstractTester;
 
@@ -34,15 +35,20 @@ public abstract class RegularPoolModel implements AbstractModel {
     private final List<StandardDataLineContainer> rawData = new ArrayList<>();
     private final List<VariableData> variables = new ArrayList<>();
     private final List<SimpleResultContainer> analysedResults = new ArrayList<>();
+    private final TotalDataContainer totalDataContainer;
+    private boolean haveTreeLimits = false;
+    private int pointLimit = 10;
     private ExpressGraphGenerator generator;
+
 
     private static final Logger logger = LoggerFactory.getLogger(PoolESVecModel.class);
 
     @Setter
     private boolean search = true;
 
-    public RegularPoolModel(Interpreter interpreter, AbstractTester<TreeVertex> tester, int partAmount) {
+    public RegularPoolModel(Interpreter interpreter, TotalDataContainer totalDataContainer, AbstractTester<TreeVertex> tester, int partAmount) {
         this.interpreter = interpreter;
+        this.totalDataContainer = totalDataContainer;
         this.partAmount = partAmount;
         this.tester = tester;
         this.tester.setVariables(variables);
@@ -53,11 +59,13 @@ public abstract class RegularPoolModel implements AbstractModel {
         logger.info("DATA SIZE: {}", dataSize);
         this.generator = new ExpressGraphGenerator(30, 4, dataSize);
 
-        for(int nameId = 0; nameId < dataSize; nameId++) {
-            DoubleVariable variable = new DoubleVariable(nameId);
-            variable.execute();
-            this.variables.add(variable);
+        if(this.haveTreeLimits) {
+            this.generator.setHaveLimit(true);
+            this.generator.setPointLimit(this.pointLimit);
+            this.generator.setVertexEndChance(50);
         }
+
+        this.variables.addAll(this.getTotalDataContainer().createVariables(dataSize));
 
         long time = System.currentTimeMillis();
         double maxResult = 0;

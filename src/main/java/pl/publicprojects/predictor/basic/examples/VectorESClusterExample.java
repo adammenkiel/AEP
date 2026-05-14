@@ -33,7 +33,7 @@ public class VectorESClusterExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    DoubleVectorVariable variable = new DoubleVectorVariable(nameId, new ArrayList<>());
+                    DoubleVectorVariable variable = new DoubleVectorVariable(interpreter, nameId, new ArrayList<>());
                     variable.execute();
                     list.add(variable);
                 }
@@ -42,7 +42,7 @@ public class VectorESClusterExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                DoubleVectorVariable variable = new DoubleVectorVariable(nameId, new ArrayList<>());
+                DoubleVectorVariable variable = new DoubleVectorVariable(interpreter, nameId, new ArrayList<>());
                 variable.execute();
                 return variable;
             }

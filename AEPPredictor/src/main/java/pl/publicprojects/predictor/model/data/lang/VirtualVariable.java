@@ -14,10 +14,12 @@ import java.io.IOException;
 public class VirtualVariable extends VariableData {
 
     private final DataPointer pointer;
+    private final Interpreter interpreter;
 
-    public VirtualVariable(int nameId, DataPointer dataPointer) {
+    public VirtualVariable(Interpreter interpreter, int nameId, DataPointer dataPointer) {
         this.setNameId(nameId);
         this.pointer = dataPointer;
+        this.interpreter = interpreter;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class VirtualVariable extends VariableData {
 
     @Override
     public void execute() {
-        Interpreter.getInst().getCurrentVariables().put(this.getNameId(), this);
+        this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
     @Override

@@ -2,6 +2,7 @@ package pl.publicprojects.predictor.graph.expression.algebra;
 
 import lombok.Getter;
 import lombok.Setter;
+import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.stream.LanguageOutputStream;
 import pl.publicprojects.predictor.graph.TreeVertex;
@@ -76,8 +77,8 @@ public class AlgebraicVertex extends TreeVertex {
     }
 
     @Override
-    public LanguageNumber<?> getValue() {
-        return this.operation(children[0].getValue(), children[1].getValue());
+    public LanguageNumber<?> getValue(Interpreter interpreter) {
+        return this.operation(children[0].getValue(interpreter), children[1].getValue(interpreter));
     }
 
     public AlgebraicVertex(int operationId) {

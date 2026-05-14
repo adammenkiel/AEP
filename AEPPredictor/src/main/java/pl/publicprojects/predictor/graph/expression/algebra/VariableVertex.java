@@ -37,7 +37,7 @@ public class VariableVertex extends TreeVertex {
     }
 
     @Override
-    public LanguageNumber<?> getValue() {
-        return (LanguageNumber<?>)Interpreter.getInst().getCurrentVariableByNameId(this.nameId).getValue();
+    public LanguageNumber<?> getValue(Interpreter interpreter) {
+        return (LanguageNumber<?>)interpreter.getCurrentVariableByNameId(this.nameId).getValue();
     }
 }

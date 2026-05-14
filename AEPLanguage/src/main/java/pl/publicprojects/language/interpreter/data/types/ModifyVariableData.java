@@ -12,6 +12,11 @@ public class ModifyVariableData extends LanguageData {
 
     private int nameId;
     private byte[] bytes;
+    private final Interpreter interpreter;
+
+    public ModifyVariableData(Interpreter interpreter) {
+        this.interpreter = interpreter;
+    }
 
     @Override
     public int getId() {
@@ -25,12 +30,10 @@ public class ModifyVariableData extends LanguageData {
     }
     @Override
     public void execute() throws IOException {
-        Interpreter inter = Interpreter.getInst();
-
-        var value = inter.getAlgebraicExpressionManager()
+        var value = this.interpreter.getAlgebraicExpressionManager()
                 .getResult(this.bytes);
 
-        inter.getCurrentVariableByNameId(this.nameId)
+        this.interpreter.getCurrentVariableByNameId(this.nameId)
                 .setValue(value);
     }
 }

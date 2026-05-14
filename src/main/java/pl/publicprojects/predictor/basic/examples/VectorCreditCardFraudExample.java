@@ -21,7 +21,7 @@ import java.util.Scanner;
 
 public class VectorCreditCardFraudExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/Diabetes/Frauds/creditcard_processed.txt";
 
     public static void main(String[] args) throws Exception {
 
@@ -32,7 +32,7 @@ public class VectorCreditCardFraudExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    DoubleVectorVariable variable = new DoubleVectorVariable(nameId, new ArrayList<>());
+                    DoubleVectorVariable variable = new DoubleVectorVariable(interpreter, nameId, new ArrayList<>());
                     variable.execute();
                     list.add(variable);
                 }
@@ -41,7 +41,7 @@ public class VectorCreditCardFraudExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                DoubleVectorVariable variable = new DoubleVectorVariable(nameId, new ArrayList<>());
+                DoubleVectorVariable variable = new DoubleVectorVariable(interpreter, nameId, new ArrayList<>());
                 variable.execute();
                 return variable;
             }

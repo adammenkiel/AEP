@@ -36,7 +36,7 @@ public class VirtualCreditCardFraudExample {
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                     variable.execute();
                     list.add(variable);
                 }
@@ -45,7 +45,7 @@ public class VirtualCreditCardFraudExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                VirtualVariable variable = new VirtualVariable(nameId, pointer);
+                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
             }
@@ -97,7 +97,7 @@ public class VirtualCreditCardFraudExample {
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
                     for(int i = 1; i <= 30; i++) numberTable[i] = new DoubleNumber(Double.parseDouble(lineArgs[i]));
 
-                    super.addData(new VirtualDataLineContainer(numberTable, container, pointer));
+                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
                     //super.getTotalDataContainer().getRawData().add(new VirtualDataLineContainer(numberTable, container, pointer));
                 }
             }
