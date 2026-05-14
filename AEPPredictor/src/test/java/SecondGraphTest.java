@@ -12,7 +12,7 @@ public class SecondGraphTest {
 
         Interpreter i = new Interpreter();
 
-        DoubleVariable var = new DoubleVariable(0);
+        DoubleVariable var = new DoubleVariable(i,0);
         var.setValue(new DoubleNumber(2));
         var.execute();
 

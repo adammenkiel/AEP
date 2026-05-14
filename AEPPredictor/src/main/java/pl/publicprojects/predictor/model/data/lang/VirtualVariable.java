@@ -35,10 +35,9 @@ public class VirtualVariable extends VariableData {
     @Override
     public Object getValue() {
         try {
-            LanguageNumber<?> val = this.pointer.getPointerContainer().get(this.getNameId() + 1);
-            return val;
+            return this.pointer.getPointerContainer().get(this.getNameId() + 1);
         } catch (Exception e) {
-            throw new RuntimeException("getPointerContainer#get");
+            throw new RuntimeException("getPointerContainer#get", e);
         }
     }
 

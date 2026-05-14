@@ -1,6 +1,7 @@
 package pl.publicprojects.predictor.basic.examples;
 
 import org.nd4j.linalg.factory.Nd4j;
+import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleVectorNumber;
@@ -10,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVectorVariable;
+import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardVectorTest;
 
@@ -64,6 +66,7 @@ public class VectorCreditCardFraudExample {
         ) {
 
             private double max = 0;
+            private final Logger logger = ExpressionStandardModel.getLogger();
 
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
@@ -74,8 +77,8 @@ public class VectorCreditCardFraudExample {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
-                        System.out.println("Grade: " + grade);
-                        System.out.println("$" + container.getVariables().size() +"$ = " + code);
+                        this.logger.info("Grade: {}", grade);
+                        this.logger.info("${}$ = {}", container.getVariables().size(), code);
                     }
                 } catch (Exception ignored) {}
             }
@@ -103,35 +106,6 @@ public class VectorCreditCardFraudExample {
                     i++;
                 }
                 super.addData(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));
-
-
-                /*
-                    *  File file = new File(DEFAULT_SIMPLE_TEST_FILE);
-                Scanner scanner = new Scanner(file); // not optimal
-
-                List<Double> score = new ArrayList<>();
-                List<Double> xVal = new ArrayList<>();
-                List<Double> yVal = new ArrayList<>();
-                while(scanner.hasNextLine()) {
-                    String[] lineArgs = scanner.nextLine().split(" ");
-
-                    double x = Double.parseDouble(lineArgs[1]) / 10;
-                    double y = Double.parseDouble(lineArgs[2]) / 10;
-                    score.add((double)Integer.parseInt(lineArgs[0]));
-                    xVal.add(x);
-                    yVal.add(y);
-                }
-
-                LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 2];
-                numberTable[0] = new DoubleVectorNumber(score);
-                numberTable[1] = new DoubleVectorNumber(xVal);
-                numberTable[2] = new DoubleVectorNumber(yVal);
-
-                super.addData(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));*/
-
-                //super.getTotalDataContainer().getRawData().add(new VirtualDataLineContainer(numberTable, container, pointer));
-
-
 
             }
         };

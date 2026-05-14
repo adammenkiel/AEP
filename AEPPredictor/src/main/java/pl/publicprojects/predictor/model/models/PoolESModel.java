@@ -35,6 +35,7 @@ public abstract class PoolESModel implements AbstractModel {
     private boolean searching = true;
     private final boolean minTime;
 
+    @Getter
     private static final Logger logger = LoggerFactory.getLogger(PoolESModel.class);
 
     @Setter

@@ -15,7 +15,7 @@ public class ThirdGraphTest {
 
     public static Map<Double, Double> map = new HashMap<>();
     public static Interpreter i = new Interpreter();
-    public static DoubleVariable var = new DoubleVariable(0);
+    public static DoubleVariable var = new DoubleVariable(i, 0);
 
     public static double standardTest(byte[] bytes) throws IOException {
         AtomicReference<Double> max = new AtomicReference<>((double) 0);

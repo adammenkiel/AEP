@@ -1,6 +1,8 @@
 package pl.publicprojects.predictor.basic.examples;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
@@ -11,6 +13,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.RegularPoolModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
@@ -24,10 +27,11 @@ import java.util.Scanner;
 public class RegularPartClusterExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
+    private static final Logger logger = LoggerFactory.getLogger(RegularPartClusterExample.class);
 
     public static void main(String[] args) throws Exception {
 
-        System.out.println("Running...");
+        logger.info("Running...");
         Interpreter interpreter = new Interpreter();
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
@@ -62,16 +66,18 @@ public class RegularPartClusterExample {
                 30
         ) {
 
+            private final Logger logger = ExpressionStandardModel.getLogger();
+
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
-                System.out.println("Founded...");
+                this.logger.info("Founded...");
                 String code = vertex.toString();
 
                 try {
                     container.getExpressionList().add(vertex.visit());
                     super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
-                    System.out.println("Grade: " + grade);
-                    System.out.println("$" + (this.getRawData().getFirst().getRawData().length + container.getExpressionList().size() - 2) +"$ = " + code + "");
+                    this.logger.info("Grade: {}", grade);
+                    this.logger.info("${}$ = {}", this.getRawData().getFirst().getRawData().length + container.getExpressionList().size() - 2, code);
 
                 } catch (Exception ignored) {}
             }

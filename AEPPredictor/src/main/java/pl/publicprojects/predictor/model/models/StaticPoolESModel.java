@@ -31,6 +31,7 @@ public abstract class StaticPoolESModel implements AbstractModel {
     private final double gradeResult;
     private int rawDataTableSize = -1;
 
+    @Getter
     private static final Logger logger = LoggerFactory.getLogger(StandardModel.class);
 
     @Setter

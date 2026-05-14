@@ -1,6 +1,7 @@
 package pl.publicprojects.predictor.basic.examples;
 
 import org.nd4j.linalg.factory.Nd4j;
+import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleVectorNumber;
@@ -10,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVectorVariable;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardVectorTest;
 
@@ -64,6 +66,7 @@ public class VectorESClusterExample {
         ) {
 
             private double max = 0;
+            private final Logger logger = ExpressionStandardModel.getLogger();
 
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
@@ -73,8 +76,8 @@ public class VectorESClusterExample {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
-                        System.out.println("Grade: " + grade);
-                        System.out.println("$" + container.getVariables().size() +"$ = " + code + "");
+                        this.logger.info("Grade: {}", grade);
+                        this.logger.info("${}$ = {}", container.getVariables().size(), code);
                     }
                 } catch (Exception ignored) {}
             }

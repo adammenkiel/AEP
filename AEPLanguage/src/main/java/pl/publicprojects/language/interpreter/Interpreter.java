@@ -1,6 +1,8 @@
 package pl.publicprojects.language.interpreter;
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.data.LanguageData;
 import pl.publicprojects.language.interpreter.data.math.bool.BooleanExpressionManager;
 import pl.publicprojects.language.interpreter.data.math.number.AlgebraicExpressionManager;
@@ -29,6 +31,8 @@ public class Interpreter {
     private final AlgebraicExpressionManager algebraicExpressionManager;
     private final BooleanExpressionManager booleanExpressionManager;
 
+    private static final Logger logger = LoggerFactory.getLogger(Interpreter.class);
+
     public Interpreter() {
         this.algebraicExpressionManager = new AlgebraicExpressionManager(this);
         this.booleanExpressionManager = new BooleanExpressionManager(this);
@@ -52,7 +56,7 @@ public class Interpreter {
      */
     public void registerData(LanguageData... dataList) {
         for(LanguageData data : dataList) {
-            System.out.println("Registered LanguageData {opcode = " + data.getId() + "} " + data.getClass().getSimpleName());
+            logger.info("Registered LanguageData {opcode = {}} {}", data.getId(), data.getClass().getSimpleName());
         }
         Arrays.asList(dataList).forEach(this::registerData);
     }

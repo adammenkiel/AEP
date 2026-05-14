@@ -30,6 +30,7 @@ public abstract class StandardModel implements AbstractModel {
     private final List<DataLineContainer> rawData;
     private final List<VariableData> variables = new ArrayList<>();
 
+    @Getter
     private static final Logger logger = LoggerFactory.getLogger(StandardModel.class);
 
     @Setter

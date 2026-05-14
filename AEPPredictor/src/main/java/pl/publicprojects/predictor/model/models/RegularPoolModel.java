@@ -40,7 +40,7 @@ public abstract class RegularPoolModel implements AbstractModel {
     private int pointLimit = 10;
     private ExpressGraphGenerator generator;
 
-
+    @Getter
     private static final Logger logger = LoggerFactory.getLogger(PoolESVecModel.class);
 
     @Setter

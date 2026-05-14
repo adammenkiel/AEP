@@ -1,5 +1,6 @@
 package pl.publicprojects.predictor.basic.examples;
 
+import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
@@ -10,6 +11,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESVecModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
@@ -63,6 +65,7 @@ public class PoolESCVecClusterExample {
         ) {
 
             private double max = 0;
+            private final Logger logger = ExpressionStandardModel.getLogger();
 
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
@@ -73,8 +76,8 @@ public class PoolESCVecClusterExample {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
-                        System.out.println("Grade: " + grade);
-                        System.out.println("$" + container.getVariables().size() +"$ = " + code + "");
+                        this.logger.info("Grade: {}", grade);
+                        this.logger.info("${}$ = {}", container.getVariables().size(), code);
                     }
                 } catch (Exception ignored) {}
             }
