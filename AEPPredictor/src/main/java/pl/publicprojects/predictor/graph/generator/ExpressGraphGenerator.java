@@ -12,12 +12,17 @@ import pl.publicprojects.predictor.graph.expression.algebra.VariableVertex;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.SplittableRandom;
+import java.util.random.RandomGenerator;
 
 @Getter
 @Setter
 public class ExpressGraphGenerator {
 
-    private Random random = new Random();
+    //private Random random = new Random();
+    //private SplittableRandom random = new SplittableRandom(); // not thread-safe
+    private RandomGenerator random = RandomGenerator.of("Xoroshiro128PlusPlus");
+
     private List<AlgebraicVertex> vertexList = new ArrayList<>();
     private int vertexChance;
     private int numberValues;
@@ -49,13 +54,13 @@ public class ExpressGraphGenerator {
 
     //TODO: REMOVE MAGIC
     private TreeVertex draw() {
-        int a = random.nextInt(100);
+        final int a = random.nextInt(100);
 
-        int chanceOne = vertexChance;
-        int chanceTwo = (100 - chanceOne) / 2;
+        final int chanceOne = vertexChance;
+        final int chanceTwo = (100 - chanceOne) / 2;
 
         int standardAlgebra = random.nextInt(3);
-        if(standardAlgebra == 2) standardAlgebra = 3;
+        if(standardAlgebra == 2) standardAlgebra = 3; // temporary
 
         if(a < chanceOne) return new AlgebraicVertex(standardAlgebra);
         if(a < chanceOne + chanceTwo) return new NumberVertex(new DoubleNumber((random.nextInt(this.numberValues))));
@@ -80,8 +85,8 @@ public class ExpressGraphGenerator {
         int addedPointsAmount = 0;
         final boolean haveLimitConst = haveLimit;
         while(!vertexList.isEmpty()) {
-            AlgebraicVertex random = this.getRandom();
-
+            AlgebraicVertex random = this.vertexList.get(0); //faster than getFirst
+            //this.getRandom();
             TreeVertex createdChild = haveLimitConst && this.pointLimit < addedPointsAmount ? this.drawEnd() : this.draw();
 
             random.addChild(createdChild);
