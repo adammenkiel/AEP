@@ -1,3 +1,6 @@
+package pl.publicprojects.aep.tests.graph;
+
+import org.junit.jupiter.api.Test;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
@@ -6,8 +9,12 @@ import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
 
 import java.io.IOException;
 
-public class SecondGraphTest {
-    public static void main(String[] args) throws IOException {
+import static org.junit.jupiter.api.Assertions.*;
+
+public class GraphGeneratorTest {
+
+    @Test
+    public void graphGeneratorTest() throws IOException {
         ExpressGraphGenerator generator = new ExpressGraphGenerator();
 
         Interpreter i = new Interpreter();
@@ -17,22 +24,16 @@ public class SecondGraphTest {
         var.execute();
 
         for(int a = 0; a < 10000; a++) {
-            var.setValue(new DoubleNumber(1));
-            System.out.println(" ");
             TreeVertex vert = generator.generate();
-            System.out.println(vert);
             byte[] bytes = vert.visit();
-            double resultValue = (double) i.getAlgebraicExpressionManager()
-                    .getResult(bytes)
-                    .getValue();
-            System.out.println("Result: " + resultValue);
-            var.setValue(new DoubleNumber(2));
-            resultValue = (double) i.getAlgebraicExpressionManager()
+            assertNotNull(bytes);
+
+            Object resultValue = i.getAlgebraicExpressionManager()
                     .getResult(bytes)
                     .getValue();
 
-            System.out.println("Result: " + resultValue);
-            System.out.println(" ");
+            assertNotNull(resultValue);
+            assertInstanceOf(Number.class, resultValue);
         }
     }
 }

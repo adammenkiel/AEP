@@ -1,16 +1,43 @@
+package pl.publicprojects.aep.tests.interpreter.program.programs;
+
+import pl.publicprojects.aep.tests.interpreter.program.ProgramGenerator;
+
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class ThirdProgramTest {
-    public static void main(String[] args) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream("AEPPublic/programs/four.aep");
+//"AEPPublic/programs/four.aep"
+/**
+ * Simplified form of that code:
+ * <code><br/>
+ * int $0$ = startValue; <br/>
+ * if($0$ < ifValue) {<br/>
+ *     $0$ = $0$ + setValue;<br/>
+ * }<br/>
+ * </code>
+ * We omit writing "+ 0" in pseudocode above.
+ */
+public class ThirdProgram extends ProgramGenerator {
+
+
+    private final int startValue;
+    private final int ifValue;
+    private final int addValue;
+
+    public ThirdProgram(int startValue, int ifValue, int addValue) {
+        this.startValue = startValue;
+        this.ifValue = ifValue;
+        this.addValue = addValue;
+    }
+
+    @Override
+    public byte[] getProgramBytecode() throws IOException {
+        ByteArrayOutputStream fileOutputStream = new ByteArrayOutputStream();
         DataOutputStream stream = new DataOutputStream(fileOutputStream);
         stream.writeInt(3); // command id
         stream.writeInt(8); // len
         stream.writeInt(0); // nameId
-        stream.writeInt(0); // value
+        stream.writeInt(this.startValue); // value
 
 
         stream.writeInt(8); // command id conditionData
@@ -27,14 +54,14 @@ public class ThirdProgramTest {
         stream.writeByte(0); // number
         stream.writeInt(5); // len
         stream.writeByte(2); // int
-        stream.writeInt(0);
+        stream.writeInt(0); // value
         //
         stream.writeInt(21); // len
         stream.writeByte(1); // +
         stream.writeByte(0); // number
-        stream.writeInt(5); // len
+        stream.writeInt(4 + 1); // len
         stream.writeByte(2); // int
-        stream.writeInt(5); // value
+        stream.writeInt(this.ifValue); // value
         stream.writeByte(0); // number
         stream.writeInt(5); // len
         stream.writeByte(2); // int
@@ -54,12 +81,13 @@ public class ThirdProgramTest {
         stream.writeByte(0);
         stream.writeInt(4 + 1); // length
         stream.writeByte(2);
-        stream.writeInt(10000);
+        stream.writeInt(this.addValue);
         stream.writeByte(0);
         stream.writeInt(4 + 1); // length
         stream.writeByte(2);
         stream.writeInt(0);
 
         stream.writeInt(0); // if false (len)
+        return fileOutputStream.toByteArray();
     }
 }
