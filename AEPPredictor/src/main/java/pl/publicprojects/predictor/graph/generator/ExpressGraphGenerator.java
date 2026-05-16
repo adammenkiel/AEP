@@ -32,6 +32,8 @@ public class ExpressGraphGenerator {
     private int pointLimit;
     private int vertexEndChance;
 
+    private final int MAX_PERCENT = 100;
+
     public ExpressGraphGenerator() {
         this.vertexChance = 34;
         this.numberValues = 100;
@@ -52,12 +54,11 @@ public class ExpressGraphGenerator {
         return vertexList.get(random.nextInt(vertexList.size()));
     }
 
-    //TODO: REMOVE MAGIC
     private TreeVertex draw() {
-        final int a = random.nextInt(100);
+        final int a = random.nextInt(MAX_PERCENT);
 
         final int chanceOne = vertexChance;
-        final int chanceTwo = (100 - chanceOne) / 2;
+        final int chanceTwo = (MAX_PERCENT - chanceOne) / 2;
 
         int standardAlgebra = random.nextInt(3);
         if(standardAlgebra == 2) standardAlgebra = 3; // temporary
@@ -68,7 +69,7 @@ public class ExpressGraphGenerator {
     }
 
     private TreeVertex drawEnd() {
-        int a = random.nextInt(100);
+        int a = random.nextInt(MAX_PERCENT);
         int chanceOne = vertexEndChance;
 
         if(a < chanceOne) return new VariableVertex(random.nextInt(this.variablesAmount));

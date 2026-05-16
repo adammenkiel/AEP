@@ -26,9 +26,12 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+/**
+ * That model able to find a good result (< 90%) of
+ * dataset/result.txt problem after 100000 iterations.
+ */
 public class PoolESModelTest {
-
-
 
     @Test
     public void poolESModelTest() throws Exception {
@@ -123,7 +126,6 @@ public class PoolESModelTest {
         poolESModel.loadData();
         poolESModel.setMainModelTreeLimit(5);
         poolESModel.search();
-        assertTrue(score.get() > 0.80);
-        //poolESModel.setMainModelTreeLimit(1);
+        assertTrue(score.get() > 0.90);
     }
 }
