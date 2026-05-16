@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 /**
- * That model able to find a good result (< 90%) of
+ * That model able to find a good result (> 90%) of
  * dataset/result.txt problem after 100000 iterations.
  */
 public class PoolESModelTest {

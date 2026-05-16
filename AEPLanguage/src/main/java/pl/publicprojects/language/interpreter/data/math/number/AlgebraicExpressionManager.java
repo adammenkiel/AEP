@@ -1,6 +1,8 @@
 package pl.publicprojects.language.interpreter.data.math.number;
 
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.*;
@@ -10,7 +12,7 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
- /**
+/**
   * Calculates algebraic expressions encoded as byte arrays.
   */
 
@@ -18,6 +20,7 @@ import java.io.IOException;
 public class AlgebraicExpressionManager {
 
     private final Interpreter interpreter;
+    private static final Logger logger = LoggerFactory.getLogger(AlgebraicExpressionManager.class);
 
     /**
      * Constructor of class for calculating expression.
@@ -82,7 +85,10 @@ public class AlgebraicExpressionManager {
     public LanguageNumber<?> getResult(byte[] expression) throws IOException {
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(expression);
         LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bytesStream);
-        return this.parse(languageInputStream);
+        var res = this.parse(languageInputStream);
+        languageInputStream.close();
+        bytesStream.close();
+        return res;
     }
 
      /**
@@ -105,11 +111,14 @@ public class AlgebraicExpressionManager {
             byte numberType = lNumberStream.readByte(); // type of number
             numberFirst = this.getLangNumberByID(numberType);
             numberFirst.read(lNumberStream);
+            numberStream.close();
+            lNumberStream.close();
         } else if(typeId == 1) {
             int nameId = languageInputStream.readInt(); // variable id
             VariableData currentVariable = this.interpreter.getCurrentVariableByNameId(nameId);
             if(currentVariable == null) {
-                System.out.println("Variable is null, nameId: " + nameId);
+                logger.info("Variable is null, nameId: {}", nameId);
+                throw new RuntimeException("Variable is null, nameId: " + nameId);
             }
             numberFirst = (LanguageNumber<?>)currentVariable.getValue();
         } else if(typeId == 2) {
@@ -119,6 +128,8 @@ public class AlgebraicExpressionManager {
             ByteArrayInputStream expressionStream = new ByteArrayInputStream(bytes);
             LanguageInputStream lExpressionStream = new LanguageInputStream(this.interpreter, expressionStream);
             numberFirst = this.parse(lExpressionStream);
+            expressionStream.close();
+            lExpressionStream.close();
         }
         return numberFirst;
     }

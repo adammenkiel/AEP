@@ -61,7 +61,10 @@ public class BooleanExpressionManager {
             byte[] bytes = languageInputStream.readBytesTable();
             ByteArrayInputStream expressionStream = new ByteArrayInputStream(bytes);
             LanguageInputStream lExpressionStream = new LanguageInputStream(this.interpreter, expressionStream);
-            return this.parse(lExpressionStream);
+            var res = this.parse(lExpressionStream);
+            lExpressionStream.close();
+            expressionStream.close();
+            return res;
         }
         if(typeId == 3) {
             //inequality
@@ -99,6 +102,9 @@ public class BooleanExpressionManager {
     public boolean getResult(byte[] expression) throws IOException {
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(expression);
         LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bytesStream);
-        return this.parse(languageInputStream);
+        var res = this.parse(languageInputStream);
+        bytesStream.close();
+        languageInputStream.close();
+        return res;
     }
 }
