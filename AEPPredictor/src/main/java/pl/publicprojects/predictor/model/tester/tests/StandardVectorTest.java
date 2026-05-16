@@ -26,7 +26,6 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
     private final Interpreter interpreter;
     @Setter
     private List<VariableData> variables;
-    private DoubleVectorNumber idx = null;
 
     public StandardVectorTest(
             TotalDataContainer totalDataContainer,
@@ -39,14 +38,14 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
     @Override
     public double test(TreeVertex vert) throws IOException {
 
-        if(this.idx == null) {
+        /*if(this.idx == null) {
             this.idx = new DoubleVectorNumber(
                     Nd4j.zeros(((INDArray) this.totalDataContainer.getRawData()
                             .getFirst()
                             .getRawData()[0]
                             .getValue()).length())
             );
-        }
+        }*/
         int fit = 0;
         int general = 0;
 
@@ -54,11 +53,11 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
             final INDArray correctResult = ((DoubleVectorNumber) info.getRawData()[0]).getValue().gt(0);
 
             info.update(this.getVariables());
-            final INDArray resultVectorValue = (INDArray) vert.getValue(this.interpreter).plus(this.idx).getValue();
+            final INDArray resultVectorValue = (INDArray) totalDataContainer.standardize(vert.getValue(this.interpreter)).getValue();
             final INDArray guessResult = resultVectorValue.gt(0);
             final INDArray gradeVector = Transforms.xor(correctResult, guessResult);
 
-            fit += (int) gradeVector.length() - gradeVector.castTo(DataType.INT32).sumNumber().intValue();
+            fit += (int) gradeVector.length() - gradeVector.castTo(DataType.INT8).sumNumber().intValue();
             general += (int) gradeVector.length();
         }
         return (double)fit / (double) general;

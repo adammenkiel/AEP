@@ -1,7 +1,7 @@
-package pl.publicprojects.jmh.benchmarks;
+package pl.publicprojects.aep.tests.model;
 
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.infra.Blackhole;
+import org.junit.jupiter.api.Test;
+import org.nd4j.common.primitives.AtomicDouble;
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -16,30 +16,19 @@ import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
-import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
-/**
- * That's benchmark tests how much time we need to check 100000 trees
- * (please check <code>timeBehaviour(...)</code> - one iteration = one tree checked and tested)
- */
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@BenchmarkMode(Mode.AverageTime)
-@OutputTimeUnit(TimeUnit.NANOSECONDS)
-@State(Scope.Thread)
-public class ESModelBenchmark {
+public class ESModelTest {
 
-    private ExpressionStandardModel ESModel;
-
-    @Setup(Level.Invocation)
-    public void setup() throws Exception {
+    @Test
+    public void esModelSimpleTest() throws Exception {
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
@@ -68,7 +57,8 @@ public class ESModelBenchmark {
             }
         };
 
-        this.ESModel = new ExpressionStandardModel(
+        AtomicDouble score = new AtomicDouble(0);
+        final ExpressionStandardModel model = new ExpressionStandardModel(
                 interpreter,
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter)
@@ -79,6 +69,7 @@ public class ESModelBenchmark {
 
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
+                score.set(grade);
                 String code = vertex.toString();
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
@@ -118,21 +109,13 @@ public class ESModelBenchmark {
 
             @Override
             public Long timeBehaviour(ExpressGraphGenerator generator, long time, int iter) {
-                if(iter > 100000) this.setSearch(false);
+                if(iter > 1000000) this.setSearch(false);
                 return null;
             }
         };
-        container.setVariables(this.ESModel.getVariables());
-        this.ESModel.loadData();
+        container.setVariables(model.getVariables());
+        model.loadData();
+        model.search();
+        assertTrue(score.get() > 0.85);
     }
-    @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Warmup(iterations = 0)
-    @Measurement(iterations = 1)
-    @Fork(5)
-    public void modelRun(Blackhole blackhole) throws IOException {
-        this.ESModel.search();
-    }
-
 }

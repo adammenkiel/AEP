@@ -38,9 +38,6 @@ public abstract class PoolESModel implements AbstractModel {
     @Getter
     private static final Logger logger = LoggerFactory.getLogger(PoolESModel.class);
 
-    @Setter
-    private boolean search = true;
-
     public PoolESModel(
             Interpreter interpreter,
             ProxyDataLineContainer proxyDataContainer,
@@ -141,6 +138,11 @@ public abstract class PoolESModel implements AbstractModel {
 
     public ExpressGraphGenerator getGenerator() {
         return this.mainModel.getGenerator();
+    }
+
+    public void setSearch(boolean searching) {
+        this.helpfulModel.setSearch(searching);
+        this.mainModel.setSearch(searching);
     }
 
     public abstract void foundResult(double grade, TreeVertex vertex);
