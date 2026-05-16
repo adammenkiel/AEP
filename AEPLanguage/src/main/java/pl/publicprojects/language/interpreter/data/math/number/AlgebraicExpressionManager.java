@@ -10,20 +10,31 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
-/*
-* Maybe stack method of expressions notation would be better
-* but at the start I wanted to create possibility for easy decompile.
- * */
+ /**
+  * Class for calculate expressions from byte[] form.
+  */
 
 @Getter
 public class AlgebraicExpressionManager {
 
     private final Interpreter interpreter;
 
+    /**
+     * Constructor of class for calculating expression
+     * @param interpreter Interpreter is used for load variable values
+     */
     public AlgebraicExpressionManager(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
 
+     /**
+      * Function for get result of atom algebraic expressions
+      *
+      * @param id operation (+, -, /, *, ^)
+      * @param a First number
+      * @param b Second number
+      * @return Result value in LanguageNumber<?> form
+      */
     private LanguageNumber<?> count(int id, LanguageNumber<?> a, LanguageNumber<?> b) {
         return switch (id) {
             case 0 -> a.minus(b);
@@ -35,6 +46,19 @@ public class AlgebraicExpressionManager {
         };
     }
 
+    /**
+     * Method for parse id to LanguageNumber<?> form
+     *
+     * @param id ID of LanguageNumber<?>
+     *           0 - byte
+     *           1 - short
+     *           2 - integer
+     *           3 - long
+     *           4 - float
+     *           5 - double
+     *           6 - double vector
+     * @return Returns LanguageNumber with proper type
+     */
     public LanguageNumber<?> getLangNumberByID(int id) {
         return switch (id) {
             case 0 -> new ByteNumber();
@@ -48,12 +72,29 @@ public class AlgebraicExpressionManager {
         };
     }
 
+     /**
+      * Suggested function for get result of algebraic expression in byte[] form
+      *
+      * @param expression Expression in byte[] form (bytecode of expression)
+      * @return Result in LanguageNumber form
+      * @throws IOException Throws when byte[] is broken, refers to variable that doesn't exist or getValue of variable is incorrect
+      */
     public LanguageNumber<?> getResult(byte[] expression) throws IOException {
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(expression);
         LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bytesStream);
         return this.parse(languageInputStream);
     }
 
+     /**
+      * Method for read number from byte code, we have three types of numbers:
+      *     - Number (LanguageNumber)
+      *     - Variable (Variable data)
+      *     - Algebraic (for example 2 + 3 or 2 + a, if we get algebraic type we need to calculate it first)
+      *
+      * @param languageInputStream Usually byte[] stream created in getResult(byte[]) method
+      * @return Number in language number form
+      * @throws IOException Throws when byte[] is broken, refers to variable that doesn't exist or getValue of variable is incorrect
+      */
     private LanguageNumber<?> readNumber(LanguageInputStream languageInputStream) throws IOException {
         int typeId = languageInputStream.readByte(); // number(0) or variable(1) or algebraicExpression
         LanguageNumber<?> numberFirst = null;
@@ -82,6 +123,15 @@ public class AlgebraicExpressionManager {
         return numberFirst;
     }
 
+     /**
+      * Method for expression parse, we accept nodes with one or two vertex.
+      * Just one only when we have situation when we need to get a single number (getNumber)
+      * Two vertices when we need to calculate expression.
+      *
+      * @param languageInputStream Stream usually from getValue(byte[])
+      * @return Number in LanguageNumber<?> form.
+      * @throws IOException Throws when byte[] is broken, refers to variable that doesn't exist or getValue of variable is incorrect
+      */
     private LanguageNumber<?> parse(LanguageInputStream languageInputStream) throws IOException {
         int operationId = languageInputStream.readByte(); // plus minus etc
         if(operationId == 127) {
