@@ -8,6 +8,7 @@ import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.predictor.basic.examples.VirtualPoolESClusterExample;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
@@ -26,6 +27,8 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PoolESModelTest {
+
+
 
     @Test
     public void poolESModelTest() throws Exception {
@@ -64,14 +67,14 @@ public class PoolESModelTest {
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
-                200,
+                100,
                 10,
                 false
         ) {
 
             private int iterations = 0;
-            private double max = 0;
 
+            private double max = 0;
             private final Logger logger = ExpressionStandardModel.getLogger();
 
             @Override
@@ -93,7 +96,7 @@ public class PoolESModelTest {
 
             @Override
             public void foundRandomExpression(double grade, TreeVertex vertex) {
-                if(iterations > 2000000)  {
+                if(iterations > 100000)  {
                     this.setSearch(false);
                 }
                 iterations++;
@@ -110,7 +113,7 @@ public class PoolESModelTest {
 
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
                     numberTable[1] = new DoubleNumber(Double.parseDouble(lineArgs[1]) / 10);
-                    numberTable[2] = new DoubleNumber(Double.parseDouble(lineArgs[1]) / 10);
+                    numberTable[2] = new DoubleNumber(Double.parseDouble(lineArgs[2]) / 10);
 
                     super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
                 }
@@ -118,7 +121,7 @@ public class PoolESModelTest {
         };
         container.setVariables(poolESModel.getMainModel().getVariables());
         poolESModel.loadData();
-        //poolESModel.setMainModelTreeLimit(3);
+        poolESModel.setMainModelTreeLimit(5);
         poolESModel.search();
         assertTrue(score.get() > 0.80);
         //poolESModel.setMainModelTreeLimit(1);
