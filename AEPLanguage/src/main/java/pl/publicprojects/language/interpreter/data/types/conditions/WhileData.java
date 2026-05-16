@@ -8,6 +8,9 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+/**
+ * Class for "while (var) {...}" instruction.
+ */
 @Getter
 public class WhileData extends LanguageData {
 
@@ -25,12 +28,23 @@ public class WhileData extends LanguageData {
         return 9;
     }
 
+    /**
+     * Reads condition
+     * bytes for case when "while" condition is satisfied
+     *
+     * @param stream We need stream for load settings of this instructions
+     * @throws IOException When stream data is wrong
+     */
     @Override
     public void define(LanguageInputStream stream) throws IOException {
         this.conditionData = stream.readBytesTable();
         this.conditionAccepted = stream.readBytesTable();
     }
 
+    /**
+     * Emulates while loop
+     * @throws IOException if bytecode is wrong or variables are incorrect
+     */
     @Override
     public void execute() throws IOException {
 

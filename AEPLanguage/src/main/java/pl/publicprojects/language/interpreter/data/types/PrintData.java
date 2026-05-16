@@ -7,6 +7,9 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 
 import java.io.IOException;
 
+/**
+ * Print variable by System.out.println(...)
+ */
 @Getter
 public class PrintData extends LanguageData {
 
@@ -22,11 +25,19 @@ public class PrintData extends LanguageData {
         return 10;
     }
 
+    /**
+     * Reads variable id that it will print
+     * @param stream We need stream for load settings of this instructions
+     * @throws IOException When bytecode is wrong
+     */
     @Override
     public void define(LanguageInputStream stream) throws IOException {
         this.nameId = stream.readInt();
     }
 
+    /**
+     * Prints variable
+     */
     @Override
     public void execute() throws IOException {
         System.out.println(

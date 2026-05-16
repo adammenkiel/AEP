@@ -9,10 +9,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Class for simplify I/O logic
+ */
 public class LanguageInputStream extends DataInputStream {
 
 
-    private Interpreter interpreter;
+    private final Interpreter interpreter;
 
     /**
      * @param in Input Stream that we will work with.

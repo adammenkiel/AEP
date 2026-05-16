@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Class for manage variables, register instructions
+ */
 @Getter
 public class Interpreter {
 

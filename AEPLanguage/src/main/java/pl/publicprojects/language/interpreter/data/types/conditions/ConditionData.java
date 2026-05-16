@@ -7,6 +7,9 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 
 import java.io.IOException;
 
+/**
+ * Class for "if (var) {...} else {...}" instruction.
+ */
 @Getter
 public class ConditionData extends LanguageData {
 
@@ -20,11 +23,23 @@ public class ConditionData extends LanguageData {
         this.interpreter = interpreter;
     }
 
+    /**
+     * ID of instruction
+     * @return 8
+     */
     @Override
     public int getId() {
         return 8;
     }
 
+    /**
+     * Reads condition,
+     * bytes for case when "if" condition is satisfied,
+     * bytes for case when "if" condition is failed
+     *
+     * @param stream We need stream for load settings of this instructions
+     * @throws IOException When stream data is wrong
+     */
     @Override
     public void define(LanguageInputStream stream) throws IOException {
         this.conditionData = stream.readBytesTable();
@@ -32,6 +47,10 @@ public class ConditionData extends LanguageData {
         this.conditionFailed = stream.readLInputStream();
     }
 
+    /**
+     * Emulates condition
+     * @throws IOException if bytecode is wrong or variables are incorrect
+     */
     @Override
     public void execute() throws IOException {
         final Interpreter interpreter = this.interpreter;

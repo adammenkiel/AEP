@@ -39,21 +39,31 @@ public class ExpressGraphGenerator {
         this.numberValues = 100;
         this.variablesAmount = 1;
     }
+
+    /**
+     * @param vertexChance Chance of being drawn an algebraic vertex
+     * @param variablesAmount Number of variables
+     */
     public ExpressGraphGenerator(int vertexChance, int variablesAmount) {
         this.vertexChance = vertexChance;
         this.numberValues = 100;
         this.variablesAmount = variablesAmount;
     }
+
+    /**
+     * @param vertexChance Chance of being drawn an algebraic vertex
+     * @param numberValues Scale [0, n] of integers in this expression
+     * @param variablesAmount Number of variables
+     */
     public ExpressGraphGenerator(int vertexChance, int numberValues, int variablesAmount) {
         this.vertexChance = vertexChance;
         this.numberValues = numberValues;
         this.variablesAmount = variablesAmount;
     }
 
-    private AlgebraicVertex getRandom() {
-        return vertexList.get(random.nextInt(vertexList.size()));
-    }
-
+    /**
+     * @return Returns vertexes for build a graph
+     */
     private TreeVertex draw() {
         final int a = random.nextInt(MAX_PERCENT);
 
@@ -68,6 +78,10 @@ public class ExpressGraphGenerator {
         return new VariableVertex(random.nextInt(this.variablesAmount));
     }
 
+    /**
+     * Returns end vertexes when tree surpass the limit (if we set it)
+     * @return TreeVertex that isn't the AlgebraicVertex
+     */
     private TreeVertex drawEnd() {
         int a = random.nextInt(MAX_PERCENT);
         int chanceOne = vertexEndChance;
@@ -76,6 +90,10 @@ public class ExpressGraphGenerator {
         return new NumberVertex(new DoubleNumber((random.nextInt(this.numberValues))));
     }
 
+    /**
+     * Generates random algebraic expression by BFS algorithm
+     * @return Returns algebraic expression in TreeVertex form
+     */
     public TreeVertex generate() {
 
         int standardAlgebra = random.nextInt(3);
@@ -87,7 +105,6 @@ public class ExpressGraphGenerator {
         final boolean haveLimitConst = haveLimit;
         while(!vertexList.isEmpty()) {
             AlgebraicVertex random = this.vertexList.get(0); //faster than getFirst
-            //this.getRandom();
             TreeVertex createdChild = haveLimitConst && this.pointLimit < addedPointsAmount ? this.drawEnd() : this.draw();
 
             random.addChild(createdChild);

@@ -10,6 +10,9 @@ import pl.publicprojects.language.interpreter.stream.LanguageInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+/**
+ * Class for read boolean expression and equalities
+ */
 @Getter
 public class BooleanExpressionManager {
 
@@ -19,6 +22,18 @@ public class BooleanExpressionManager {
         this.interpreter = interpreter;
     }
 
+    /**
+     * Method for evaluate boolean binary operations, that operations have fixed IDs:
+     * - ID: 1 | &&
+     * - ID: 2 | ||
+     * - ID: 3 | ==
+     * - ID: 4 | ! (negation)
+     *
+     * @param id ID of operation
+     * @param a Left operand
+     * @param b Right operand
+     * @return Result
+     */
     private boolean count(int id, boolean a, boolean b) {
         return switch (id) {
             case 1 -> a && b;
@@ -29,6 +44,19 @@ public class BooleanExpressionManager {
         };
     }
 
+    /**
+     * Method for evaluate inequalities and equalities, operations have fixed id:
+     *      - ID: 0 | "<"
+     *      - ID: 1 | ">"
+     *      - ID: 2 | "<="
+     *      - ID: 3 | "=>"
+     *      - ID: 4 | "=="
+     *
+     * @param id Operation id
+     * @param a Left operand
+     * @param b Right operand
+     * @return Result
+     */
     private boolean countRelation(int id, LanguageNumber<?> a, LanguageNumber<?> b) {
         if(a.getValue() instanceof INDArray || b.getValue() instanceof INDArray) {
             throw new RuntimeException("Unsupported type");
@@ -44,6 +72,17 @@ public class BooleanExpressionManager {
         };
     }
 
+    /**
+     * Method for read various types of operations that returns bool value:
+     *      - ID: 0 | Read boolean
+     *      - ID: 1 | Read variable result
+     *      - ID: 2 | Read another expression result
+     *      - ID: 3 | Read inequality result
+     *
+     * @param languageInputStream bytecode of bool expression
+     * @return Result expressed as boolean
+     * @throws IOException If bytecode or variables is wrong
+     */
     private boolean readBooleanE(LanguageInputStream languageInputStream) throws IOException {
         byte typeId = languageInputStream.readByte();
         if(typeId == 0) {
@@ -52,7 +91,7 @@ public class BooleanExpressionManager {
         }
         if(typeId == 1) {
             //boolean variable
-            int nameId = languageInputStream.readInt(); // id zmiennej
+            int nameId = languageInputStream.readInt(); // variable id
             VariableData currentVariable = this.interpreter.getCurrentVariableByNameId(nameId);
             return (Boolean)currentVariable.getValue();
         }
@@ -83,6 +122,13 @@ public class BooleanExpressionManager {
         return false;
     }
 
+    /**
+     * Manage reading numbers and returns counted result
+     *
+     * @param languageInputStream Boolean expression in bytecode form
+     * @return Result of parse
+     * @throws IOException If bytecode or variables is wrong
+     */
     private boolean parse(LanguageInputStream languageInputStream) throws IOException {
         int operationId = languageInputStream.readByte();
         if(operationId == 0) {
@@ -99,6 +145,14 @@ public class BooleanExpressionManager {
         }
         return false;
     }
+
+    /**
+     * Preferred function for eval result of bool expression from byte[] form
+     *
+     * @param expression Bytecode in byte[] form
+     * @return Result of bool expression
+     * @throws IOException When bytecode is wrong or variable doesn't exist
+     */
     public boolean getResult(byte[] expression) throws IOException {
         ByteArrayInputStream bytesStream = new ByteArrayInputStream(expression);
         LanguageInputStream languageInputStream = new LanguageInputStream(this.interpreter, bytesStream);
