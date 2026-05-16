@@ -13,6 +13,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for store expressions that will treat as new parameters in DataLineContainers
+ * (VirtualDataLineContainer and StandardDataLineContainer)
+ * For example when we have data with columns [x, y], after add new expression exp1 here
+ * columns of this table will have a following form: [x, y, exp1]
+ */
 @Getter
 public class ProxyDataLineContainer {
 

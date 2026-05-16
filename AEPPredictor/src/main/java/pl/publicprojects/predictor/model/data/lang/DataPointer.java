@@ -8,6 +8,7 @@ import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer
 
 /**
  * Container that point for specific VirtualDataLineContainer
+ * Every VirtualVariable should have the same DataPointer with reference the same data column
  */
 @Getter
 @Setter

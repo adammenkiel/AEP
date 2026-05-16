@@ -12,6 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Optimized, not thread-safe table line that scores rawData and
+ * results of expressions that be treated as new data columns
+ */
 @Getter
 public class VirtualDataLineContainer implements DataLineContainer {
 
@@ -22,6 +27,15 @@ public class VirtualDataLineContainer implements DataLineContainer {
 
     private final List<LanguageNumber<?>> frozenValues = new ArrayList<>();
 
+    /**
+     * @param interpreter Interpreter for eval expressions
+     * @param rawData Initial data for analyse
+     * @param proxyDataContainer Expressions that be treated as new data columns,
+     *                          results of new expressions will be scored in frozenValue
+     *                          so every expression is evaluated just one time for every VirtualDataContainer
+     * @param dataPointer DataPointer points VirtualDataLineContainer that
+     *                    should be used to evaluate result of considered expression
+     */
     public VirtualDataLineContainer(
             Interpreter interpreter,
             LanguageNumber<?>[] rawData,
@@ -34,6 +48,11 @@ public class VirtualDataLineContainer implements DataLineContainer {
         this.dataPointer = dataPointer;
     }
 
+
+    /**
+     * @param index Index of data we want get
+     * @return Returns column of this table with fixed index
+     */
     public LanguageNumber<?> get(int index) throws IOException {
         if(index < this.rawData.length) {
             return this.rawData[index];
@@ -46,10 +65,17 @@ public class VirtualDataLineContainer implements DataLineContainer {
         return this.frozenValues.get(proxyIndex);
     }
 
+    /**
+     * @return Returns total size of container (raw data + proxied data (values of evaluated expressions))
+     */
     public int getSize() {
         return this.rawData.length + this.proxyDataContainer.getExpressionList().size();
     }
 
+    /**
+     * If there is no enough variables, creates new VirtualVariable with fixed dataPointer
+     * @param variables List of variables
+     */
     public void update(List<VariableData> variables) throws IOException {
         this.dataPointer.setPointerContainer(this); // rawUpdate
 
