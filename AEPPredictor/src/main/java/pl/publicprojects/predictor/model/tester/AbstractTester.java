@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AbstractTester<T> {
+
     double test(T expr) throws IOException;
     void setVariables(List<VariableData> variables);
 }

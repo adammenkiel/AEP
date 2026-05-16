@@ -61,7 +61,7 @@ public class VectorCreditCardFraudExample {
                 new StandardVectorTest(totalDataContainer, interpreter),
                 new StandardVectorTest(totalDataContainer, interpreter),
                 0,
-                20,
+                200,
                 false
         ) {
 

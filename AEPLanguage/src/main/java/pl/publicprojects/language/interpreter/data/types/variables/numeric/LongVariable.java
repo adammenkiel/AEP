@@ -31,6 +31,11 @@ public class LongVariable extends VariableData {
         this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
+    /**
+     * Returns value of that's variable
+     *
+     * @return Returns LanguageNumber<Long>
+     */
     @Override
     public Object getValue() {
         try {
@@ -42,6 +47,13 @@ public class LongVariable extends VariableData {
         }
     }
 
+    /**
+     * Function for set value of variable
+     *
+     * @param obj New result of this value expressed as LongNumber
+     * @throws RuntimeException When obj is wrong type
+     * @throws ClassCastException When type of LanguageNumber isn't Long
+     */
     @Override
     public void setValue(Object obj) throws IOException {
         if(obj instanceof LanguageNumber<?> number) {

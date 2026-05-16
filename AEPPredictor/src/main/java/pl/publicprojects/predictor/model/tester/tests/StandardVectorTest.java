@@ -19,6 +19,9 @@ import pl.publicprojects.predictor.model.tester.AbstractTester;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Test for vectors without weights for binary classification
+ */
 @Getter
 public class StandardVectorTest implements AbstractTester<TreeVertex> {
 
@@ -27,6 +30,10 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
     @Setter
     private List<VariableData> variables;
 
+    /**
+     * @param totalDataContainer TotalDataContainer is required because of using data and parsing into final form
+     * @param interpreter Interpreter is used for evaluate math expressions
+     */
     public StandardVectorTest(
             TotalDataContainer totalDataContainer,
             Interpreter interpreter
@@ -35,17 +42,18 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
         this.interpreter = interpreter;
     }
 
+
+    /**
+     * Function for scoring random expressions expressed as graph
+     *
+     * @param vert Generated random expression
+     * @return Score of generated random expression
+     * @throws IOException Throws when DataLineContainer have bad types of VariableData,
+     * or totalDataContainer is wrong.
+     */
     @Override
     public double test(TreeVertex vert) throws IOException {
 
-        /*if(this.idx == null) {
-            this.idx = new DoubleVectorNumber(
-                    Nd4j.zeros(((INDArray) this.totalDataContainer.getRawData()
-                            .getFirst()
-                            .getRawData()[0]
-                            .getValue()).length())
-            );
-        }*/
         int fit = 0;
         int general = 0;
 
@@ -57,9 +65,9 @@ public class StandardVectorTest implements AbstractTester<TreeVertex> {
             final INDArray guessResult = resultVectorValue.gt(0);
             final INDArray gradeVector = Transforms.xor(correctResult, guessResult);
 
-            fit += (int) gradeVector.length() - gradeVector.castTo(DataType.INT8).sumNumber().intValue();
+            fit += (int) gradeVector.length() - gradeVector.castTo(DataType.INT32).sumNumber().intValue();
             general += (int) gradeVector.length();
         }
-        return (double)fit / (double) general;
+        return (double) fit / (double) general;
     }
 }

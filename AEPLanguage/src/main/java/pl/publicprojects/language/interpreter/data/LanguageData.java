@@ -18,11 +18,13 @@ public abstract class LanguageData implements Cloneable {
      * Function for preload an instruction, here we can read byte data about this instruction
      *
      * @param stream We need stream for load settings of this instructions
+     * @throws IOException When bytecode is broken.
      */
     public abstract void define(LanguageInputStream stream) throws IOException;
 
     /**
-     * Function to execute an instruction when we need to do it/
+     * Function to execute an instruction when we need to do it
+     * @throws IOException When parameters of implementation of instructions are wrong.
      */
     public abstract void execute() throws IOException;
 

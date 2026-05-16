@@ -11,18 +11,25 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Maybe I will move it into AEPLanguage in the future
+ * Class for double vector.
  */
 @Getter
 public class DoubleVectorVariable extends VariableData {
 
-    private INDArray array;
     private final Interpreter interpreter;
+    private DoubleVectorNumber doubleVectorNumber;
 
+    /**
+     * Creates new variable.
+     *
+     * @param interpreter Variables are stored in Interpreter#currentVariables
+     * @param nameId ID of variable
+     * @param doubleVector Vector expressed as List<Double>
+     */
     public DoubleVectorVariable(Interpreter interpreter, int nameId, List<Double> doubleVector) {
         this.interpreter = interpreter;
         this.setNameId(nameId);
-        this.array = Nd4j.create(doubleVector);
+        this.doubleVectorNumber = new DoubleVectorNumber(Nd4j.create(doubleVector));
     }
 
     @Override
@@ -37,13 +44,13 @@ public class DoubleVectorVariable extends VariableData {
 
     @Override
     public Object getValue() {
-        return new DoubleVectorNumber(array);
+        return this.doubleVectorNumber;
     }
 
     @Override
     public void setValue(Object obj) throws IOException {
         if(obj instanceof DoubleVectorNumber number) {
-            this.array = number.getValue();
+            this.doubleVectorNumber = number;
             return;
         }
         throw new RuntimeException("Unsupported type " + obj.getClass().getSimpleName());

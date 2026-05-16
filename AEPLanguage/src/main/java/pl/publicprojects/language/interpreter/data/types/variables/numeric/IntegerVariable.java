@@ -32,6 +32,10 @@ public class IntegerVariable extends VariableData {
         this.interpreter.getCurrentVariables().put(this.getNameId(), this);
     }
 
+    /**
+     * Returns value
+     * @return Value in IntegerNumber form
+     */
     @Override
     public Object getValue() {
         byte[] data = this.getData();
@@ -41,6 +45,13 @@ public class IntegerVariable extends VariableData {
                 (data[3]  & 0xFF));
     }
 
+    /**
+     * Save value in byte form
+     *
+     * @param obj IntegerNumber
+     * @throws ClassCastException When type of LanguageNumber isn't Integer
+     * @throws RuntimeException Throws when type is wrong.
+     */
     @Override
     public void setValue(Object obj) throws IOException {
         if(obj instanceof LanguageNumber<?> number) {

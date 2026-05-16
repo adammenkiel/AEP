@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
  /**
-  * Class for calculate expressions from byte[] form.
+  * Calculates algebraic expressions encoded as byte arrays.
   */
 
 @Getter
@@ -20,19 +20,19 @@ public class AlgebraicExpressionManager {
     private final Interpreter interpreter;
 
     /**
-     * Constructor of class for calculating expression
-     * @param interpreter Interpreter is used for load variable values
+     * Constructor of class for calculating expression.
+     * @param interpreter Interpreter is used for load variable values.
      */
     public AlgebraicExpressionManager(Interpreter interpreter) {
         this.interpreter = interpreter;
     }
 
      /**
-      * Function for get result of atom algebraic expressions
+      * Function for get result of binary arithmetic operations of two numbers
       *
       * @param id operation (+, -, /, *, ^)
-      * @param a First number
-      * @param b Second number
+      * @param a Left operand
+      * @param b Right operand
       * @return Result value in LanguageNumber<?> form
       */
     private LanguageNumber<?> count(int id, LanguageNumber<?> a, LanguageNumber<?> b) {
@@ -73,7 +73,7 @@ public class AlgebraicExpressionManager {
     }
 
      /**
-      * Suggested function for get result of algebraic expression in byte[] form
+      * Evaluates result encoded as bytecode form
       *
       * @param expression Expression in byte[] form (bytecode of expression)
       * @return Result in LanguageNumber form
