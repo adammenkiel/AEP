@@ -19,9 +19,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Model similar to ExpressionStandardModel but it model puts new expressions into ProxyDataLineContainer
+ * in fixed batches.
+ */
 @Getter
 public abstract class RegularPoolModel implements AbstractModel {
 
+    /**
+     * Simple container for store good results into this.analyzedResults
+     * When number of founded expressions exceeds partAmount this.analyzedResults
+     * will be added into ProxyDataContainer and number of founded exception will be reseted
+     * Score threshold will be set into maximum of score of founded expression
+     *
+     * @param result Grade
+     * @param graph Expression
+     */
     private record SimpleResultContainer(double result, TreeVertex graph) {
         private SimpleResultContainer(double result, TreeVertex graph) {
             this.result = result;
@@ -46,7 +59,19 @@ public abstract class RegularPoolModel implements AbstractModel {
     @Setter
     private boolean search = true;
 
-    public RegularPoolModel(Interpreter interpreter, TotalDataContainer totalDataContainer, AbstractTester<TreeVertex> tester, int partAmount) {
+    /**
+     *
+     * @param interpreter Required for evaluate expression
+     * @param totalDataContainer Required for creating new variables and store dataset lines
+     * @param tester Required for score solutions by fixed way
+     * @param partAmount Number of expressions we need find to invoke foundResult for all of these expressions
+     */
+    public RegularPoolModel(
+            Interpreter interpreter,
+            TotalDataContainer totalDataContainer,
+            AbstractTester<TreeVertex> tester,
+            int partAmount
+    ) {
         this.interpreter = interpreter;
         this.totalDataContainer = totalDataContainer;
         this.partAmount = partAmount;
@@ -54,6 +79,10 @@ public abstract class RegularPoolModel implements AbstractModel {
         this.tester.setVariables(variables);
     }
 
+    /**
+     * Searches solutions by parts
+     * @throws IOException When variables or another configuration(loadData etc) is wrong
+     */
     public void search() throws IOException {
         int dataSize = rawData.getFirst().getSize() - 1;
         logger.info("DATA SIZE: {}", dataSize);
@@ -102,8 +131,27 @@ public abstract class RegularPoolModel implements AbstractModel {
         throw new RuntimeException("Unsupported!");
     }
 
+    /**
+     * Method for define what will be happened if any expression will be found
+     * That's function is invoked even if score of considered expression is bad
+     * This method may be used for adding new expressions that may be used for
+     * generating new expressions <br />
+     * CAUTION: That's method is invoked in parts only when amount of expressions
+     * threshold this.partAmount
+     *
+     * @param grade Score of this expression
+     * @param vertex Expression in graph form
+     */
     public abstract void foundResult(double grade, TreeVertex vertex);
 
+    /**
+     * Method for define what will be happened if good-graded expression will be found
+     * This method may be used for adding new expressions that may be used for
+     * generating new expressions
+     *
+     * @param grade Score of this expression
+     * @param vertex Expression in graph form
+     */
     public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 
