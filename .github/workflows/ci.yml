@@ -21,4 +21,5 @@ jobs:
         run: chmod +x gradlew
       - name: Gradle test
         run: ./gradlew clean test
-        
+      - name: JMH Benchmarks
+        run: ./gradlew clean jmh -PlightBuild

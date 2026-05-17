@@ -2,6 +2,7 @@ package pl.publicprojects.language.interpreter.data.math.number.numbers;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.ops.transforms.Transforms;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;

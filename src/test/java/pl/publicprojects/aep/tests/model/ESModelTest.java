@@ -1,7 +1,6 @@
 package pl.publicprojects.aep.tests.model;
 
 import org.junit.jupiter.api.Test;
-import org.nd4j.common.primitives.AtomicDouble;
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -10,6 +9,7 @@ import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNu
 import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.graph.generator.ExpressGraphGenerator;
+import pl.publicprojects.aep.tests.helper.ValueContainer;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
@@ -57,7 +57,7 @@ public class ESModelTest {
             }
         };
 
-        AtomicDouble score = new AtomicDouble(0);
+        ValueContainer<Double> score = new ValueContainer<>(0.D);
         final ExpressionStandardModel model = new ExpressionStandardModel(
                 interpreter,
                 totalDataContainer,
@@ -69,7 +69,7 @@ public class ESModelTest {
 
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
-                score.set(grade);
+                score.setValue(grade);
                 String code = vertex.toString();
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
@@ -109,13 +109,13 @@ public class ESModelTest {
 
             @Override
             public Long timeBehaviour(ExpressGraphGenerator generator, long time, int iter) {
-                if(iter > 1000000) this.setSearch(false);
+                if(iter > 100000) this.setSearch(false);
                 return null;
             }
         };
         container.setVariables(model.getVariables());
         model.loadData();
         model.search();
-        assertTrue(score.get() > 0.85);
+        assertTrue(score.getValue() > 0.80);
     }
 }

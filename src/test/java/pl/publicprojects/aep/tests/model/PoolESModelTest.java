@@ -1,15 +1,14 @@
 package pl.publicprojects.aep.tests.model;
 
 import org.junit.jupiter.api.Test;
-import org.nd4j.common.primitives.AtomicDouble;
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
-import pl.publicprojects.predictor.basic.examples.VirtualPoolESClusterExample;
 import pl.publicprojects.predictor.graph.TreeVertex;
+import pl.publicprojects.aep.tests.helper.ValueContainer;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
@@ -35,7 +34,7 @@ public class PoolESModelTest {
 
     @Test
     public void poolESModelTest() throws Exception {
-        AtomicDouble score = new AtomicDouble(0);
+        ValueContainer<Double> score = new ValueContainer<>(0.D);
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
@@ -70,9 +69,9 @@ public class PoolESModelTest {
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
-                100,
+                1000,
                 10,
-                false
+                true
         ) {
 
             private int iterations = 0;
@@ -82,7 +81,7 @@ public class PoolESModelTest {
 
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
-                score.set(grade);
+                score.setValue(grade);
                 String code = vertex.toString();
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
@@ -126,6 +125,6 @@ public class PoolESModelTest {
         poolESModel.loadData();
         poolESModel.setMainModelTreeLimit(5);
         poolESModel.search();
-        assertTrue(score.get() > 0.90);
+        assertTrue(score.getValue() > 0.90);
     }
 }
