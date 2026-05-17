@@ -107,6 +107,15 @@ public abstract class RegularPoolModel implements AbstractModel {
     public abstract void foundRandomExpression(double grade, TreeVertex vertex);
 
 
+    /**
+     * Method that be invoked around every 30 seconds in the same thread as search() function
+     *
+     * @param generator Generator of random graphs,
+     *                  required for change probability of type of select AlgebraicVertex in random drawing
+     * @param time Old execution time
+     * @param iter Number of iteration of search() loop (one loop = generating tree, evaluating, grading)
+     * @return General time
+     */
     public Long timeBehaviour(ExpressGraphGenerator generator, long time, int iter) {
         double timeChange = System.currentTimeMillis() - time;
         if(timeChange > 30000) { // that's simple controller
