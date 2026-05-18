@@ -9,6 +9,7 @@ import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
@@ -32,7 +33,8 @@ public class VirtualMakeMoonExample {
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
-
+        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
+        /*
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
@@ -57,6 +59,7 @@ public class VirtualMakeMoonExample {
                 return var.plus(new DoubleNumber(0));
             }
         };
+        */
         PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,

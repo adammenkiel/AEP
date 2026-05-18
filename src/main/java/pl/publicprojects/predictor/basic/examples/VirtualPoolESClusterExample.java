@@ -9,6 +9,7 @@ import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
@@ -32,7 +33,8 @@ public class VirtualPoolESClusterExample {
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
-        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+
+        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
@@ -56,6 +58,8 @@ public class VirtualPoolESClusterExample {
                 return var.plus(new DoubleNumber(0));
             }
         };
+        */
+        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
         PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,
@@ -63,7 +67,7 @@ public class VirtualPoolESClusterExample {
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
                 100,
-                10,
+                20,
                 false
         ) {
 
@@ -109,7 +113,7 @@ public class VirtualPoolESClusterExample {
         };
         container.setVariables(poolESModel.getMainModel().getVariables());
         poolESModel.loadData();
-        //poolESModel.setMainModelTreeLimit(1);
+        poolESModel.setMainModelTreeLimit(5);
         poolESModel.search();
 
     }

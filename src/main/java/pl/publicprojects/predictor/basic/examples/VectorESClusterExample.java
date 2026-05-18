@@ -11,6 +11,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVectorVariable;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.total.DoubleVectorTotalDataContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardVectorTest;
@@ -30,7 +31,8 @@ public class VectorESClusterExample {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
-        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+        TotalDataContainer totalDataContainer = new DoubleVectorTotalDataContainer(interpreter, 500);
+        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
@@ -53,7 +55,7 @@ public class VectorESClusterExample {
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
                 return var.plus(new DoubleVectorNumber(Nd4j.zeros(500)));
             }
-        };
+        };*/
         PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,

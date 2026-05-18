@@ -12,6 +12,7 @@ import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
@@ -33,7 +34,7 @@ public class VirtualGeneticDiabetesDBExample {
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
-        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
@@ -55,7 +56,8 @@ public class VirtualGeneticDiabetesDBExample {
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
                 return var.plus(new DoubleNumber(0));
             }
-        };
+        };*/
+        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
         PoolESModel standardModel = new PoolESModel(
                 interpreter,
                 container,

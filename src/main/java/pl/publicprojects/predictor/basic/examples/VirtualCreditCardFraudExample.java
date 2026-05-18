@@ -10,6 +10,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
 import pl.publicprojects.predictor.model.data.lang.DataPointer;
 import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
@@ -32,6 +33,7 @@ public class VirtualCreditCardFraudExample {
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
         ExpressionStandardModel m;
+        /*
         TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
@@ -56,6 +58,8 @@ public class VirtualCreditCardFraudExample {
                 return var.plus(new DoubleNumber(0));
             }
         };
+         */
+        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
         PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,

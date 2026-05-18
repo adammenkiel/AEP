@@ -10,6 +10,7 @@ import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.total.DoubleTotalDataContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.StaticPoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
@@ -29,7 +30,7 @@ public class StaticPoolESClusterExample {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
-        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
@@ -53,7 +54,9 @@ public class StaticPoolESClusterExample {
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
                 return var.plus(new DoubleNumber(0));
             }
-        };
+        };*/
+        TotalDataContainer totalDataContainer = new DoubleTotalDataContainer(interpreter);
+
         StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter,
                 container,
                 totalDataContainer,

@@ -54,7 +54,7 @@ public abstract class RegularPoolModel implements AbstractModel {
     private ExpressGraphGenerator generator;
 
     @Getter
-    private static final Logger logger = LoggerFactory.getLogger(PoolESVecModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(RegularPoolModel.class);
 
     @Setter
     private boolean search = true;
