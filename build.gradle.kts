@@ -67,11 +67,5 @@ tasks.shadowJar {
     archiveVersion.set(version.toString())
 
     configurations = listOf(project.configurations.runtimeClasspath.get())
-
-    dependencies {
-        exclude(dependency("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1"))
-        exclude(dependency("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7"))
-        exclude(dependency("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64"))
-    }
 }
 
