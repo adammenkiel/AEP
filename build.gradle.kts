@@ -14,19 +14,29 @@ repositories {
 }
 
 dependencies {
+    val cpuOnly = false;
+
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 
+
     if(project.hasProperty("lightBuild")) {
-        compileOnly("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
-        compileOnly("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
-        compileOnly("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
+        if(cpuOnly) {
+            compileOnly("org.nd4j:nd4j-native-platform:1.0.0-M2.1")
+        } else {
+            compileOnly("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
+            compileOnly("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
+            compileOnly("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
+        }
     } else {
-        implementation("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
-        implementation("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
-        implementation("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
+        if(cpuOnly) {
+            implementation("org.nd4j:nd4j-native-platform:1.0.0-M2.1")
+        } else {
+            implementation("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
+            implementation("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
+            implementation("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
+        }
     }
-    //implementation("org.nd4j:nd4j-native-platform:1.0.0-M2.1")
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation(project(":AEPPredictor"))
     implementation(project(":AEPLanguage"))
