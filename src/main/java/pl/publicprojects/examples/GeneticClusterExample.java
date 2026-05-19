@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
 
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
@@ -9,14 +9,12 @@ import pl.publicprojects.language.interpreter.data.types.VariableData;
 import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
-import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
-import pl.publicprojects.predictor.model.data.lang.DataPointer;
-import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
-import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.total.DoubleTotalDataContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
-import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -24,23 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class VirtualMakeMoonExample {
+public class GeneticClusterExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/Modell/Fildereq/MakeMoons/output.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
 
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
-        DataPointer pointer = new DataPointer();
-        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
-        /*
-        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
+                    DoubleVariable variable = new DoubleVariable(interpreter, nameId);
                     variable.execute();
                     list.add(variable);
                 }
@@ -49,26 +44,23 @@ public class VirtualMakeMoonExample {
 
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
+                DoubleVariable variable = new DoubleVariable(interpreter, nameId);
                 variable.execute();
+                variable.setValue(new DoubleNumber(0));
                 return variable;
             }
 
             @Override
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
-                return var.plus(new DoubleNumber(0));
+               return var.plus(new DoubleNumber(0));
             }
-        };
-        */
-        PoolESModel poolESModel = new PoolESModel(
+        };*/
+        TotalDataContainer totalDataContainer = new DoubleTotalDataContainer(interpreter);
+
+        ExpressionStandardModel standardModel = new ExpressionStandardModel(
                 interpreter,
-                container,
                 totalDataContainer,
-                new StandardNumberTest(totalDataContainer, interpreter),
-                new StandardNumberTest(totalDataContainer, interpreter),
-                200,
-                100,
-                false
+                new StandardNumberTest(totalDataContainer, interpreter)
         ) {
 
             private double max = 0;
@@ -108,14 +100,15 @@ public class VirtualMakeMoonExample {
                     numberTable[1] = new DoubleNumber(x);
                     numberTable[2] = new DoubleNumber(y);
 
-                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
+                    super.getTotalDataContainer().getRawData().add(
+                            new StandardDataLineContainer(super.getTotalDataContainer(), numberTable, container)
+                    );
                 }
             }
         };
-        container.setVariables(poolESModel.getMainModel().getVariables());
-        poolESModel.loadData();
-        poolESModel.setMainModelTreeLimit(5);
-        poolESModel.search();
+        container.setVariables(standardModel.getVariables());
+        standardModel.loadData();
+        standardModel.search();
 
     }
 }

@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
 
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
@@ -6,15 +6,13 @@ import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
-import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
-import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
-import pl.publicprojects.predictor.model.data.lang.DataPointer;
-import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
+import pl.publicprojects.predictor.model.data.container.total.DoubleTotalDataContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
-import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
@@ -23,33 +21,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class VirtualCreditCardFraudExample {
+public class GeneticXORExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud/data";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/tester.txt";
 
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
-        DataPointer pointer = new DataPointer();
-        ExpressionStandardModel m;
-        /*
-        TotalDataContainer totalDataContainer = new TotalDataContainer() {
+        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
+                    DoubleVariable variable = new DoubleVariable(interpreter, nameId);
                     variable.execute();
                     list.add(variable);
                 }
                 return list;
             }
-
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
+                DoubleVariable variable = new DoubleVariable(interpreter, nameId);
                 variable.execute();
+                variable.setValue(new DoubleNumber(0));
                 return variable;
             }
 
@@ -57,18 +52,13 @@ public class VirtualCreditCardFraudExample {
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
                 return var.plus(new DoubleNumber(0));
             }
-        };
-         */
-        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
-        PoolESModel poolESModel = new PoolESModel(
+        };*/
+        TotalDataContainer totalDataContainer = new DoubleTotalDataContainer(interpreter);
+
+        ExpressionStandardModel standardModel = new ExpressionStandardModel(
                 interpreter,
-                container,
                 totalDataContainer,
-                new StandardNumberTest(totalDataContainer, interpreter),
-                new StandardNumberTest(totalDataContainer, interpreter),
-                0,
-                20,
-                false
+                new StandardNumberTest(totalDataContainer, interpreter)
         ) {
 
             private double max = 0;
@@ -79,7 +69,7 @@ public class VirtualCreditCardFraudExample {
                 String code = vertex.toString();
 
                 try {
-                    if(grade > 0.1 && grade - this.max > 0.01) {
+                    if (grade > 0.1 && grade - this.max > 0.01) {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
@@ -92,28 +82,29 @@ public class VirtualCreditCardFraudExample {
             }
 
             @Override
-            public void foundRandomExpression(double grade, TreeVertex vertex) {}
+            public void foundRandomExpression(double grade, TreeVertex vertex) {
+            }
 
             @Override
             public void loadData() throws Exception {
                 File file = new File(DEFAULT_SIMPLE_TEST_FILE);
                 Scanner scanner = new Scanner(file); // not optimal
-                while(scanner.hasNextLine()) {
+                while (scanner.hasNextLine()) {
                     String[] lineArgs = scanner.nextLine().split(" ");
-                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 30];
+                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 4];
 
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
-                    for(int i = 1; i <= 30; i++) numberTable[i] = new DoubleNumber(Double.parseDouble(lineArgs[i]));
 
-                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
-                    //super.getTotalDataContainer().getRawData().add(new VirtualDataLineContainer(numberTable, container, pointer));
+                    for(int i = 0; i <= 4; i++)
+                        numberTable[i] = new DoubleNumber(Double.parseDouble(lineArgs[i]));
+
+                    super.getTotalDataContainer().getRawData().add(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));
                 }
             }
         };
-        container.setVariables(poolESModel.getMainModel().getVariables());
-        poolESModel.setMainModelTreeLimit(2);
-        poolESModel.loadData();
-        poolESModel.search();
+        container.setVariables(standardModel.getVariables());
+        standardModel.loadData();
+        standardModel.search();
 
     }
 }

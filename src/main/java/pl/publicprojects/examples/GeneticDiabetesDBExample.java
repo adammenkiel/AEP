@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
 
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;

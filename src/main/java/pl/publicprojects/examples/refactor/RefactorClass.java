@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic.refactor;
+package pl.publicprojects.examples.refactor;
 
 import java.util.ArrayList;
 import java.util.List;

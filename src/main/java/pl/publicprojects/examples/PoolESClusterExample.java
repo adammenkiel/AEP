@@ -1,4 +1,5 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
+
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
@@ -12,7 +13,7 @@ import pl.publicprojects.predictor.model.data.container.StandardDataLineContaine
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
 import pl.publicprojects.predictor.model.data.container.total.DoubleTotalDataContainer;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
-import pl.publicprojects.predictor.model.models.StaticPoolESModel;
+import pl.publicprojects.predictor.model.models.PoolESModel;
 import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
@@ -21,10 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class StaticPoolESClusterExample {
+public class PoolESClusterExample {
 
     public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
-
 
     public static void main(String[] args) throws Exception {
 
@@ -41,7 +41,6 @@ public class StaticPoolESClusterExample {
                 }
                 return list;
             }
-
             @Override
             public VariableData createVariable(int nameId) throws IOException {
                 DoubleVariable variable = new DoubleVariable(interpreter, nameId);
@@ -49,21 +48,22 @@ public class StaticPoolESClusterExample {
                 variable.setValue(new DoubleNumber(0));
                 return variable;
             }
-
             @Override
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
                 return var.plus(new DoubleNumber(0));
             }
-        };*/
+        }; */
         TotalDataContainer totalDataContainer = new DoubleTotalDataContainer(interpreter);
 
-        StaticPoolESModel poolESModel = new StaticPoolESModel(interpreter,
+        PoolESModel poolESModel = new PoolESModel(
+                interpreter,
                 container,
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
-                10,
-                0.3
+                100,
+                5,
+                false
         ) {
 
             private double max = 0;
@@ -113,4 +113,3 @@ public class StaticPoolESClusterExample {
 
     }
 }
-

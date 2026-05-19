@@ -1,5 +1,6 @@
 plugins {
     id("application")
+    id("pl.publicprojects.ktsplugin")
     id ("me.champeau.jmh") version("0.7.2")
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
@@ -13,30 +14,21 @@ repositories {
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 
+val cpuOnly = project.hasProperty("cpuOnly");
+
+
 dependencies {
-    val cpuOnly = false;
 
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
 
-
-    if(project.hasProperty("lightBuild")) {
-        if(cpuOnly) {
-            compileOnly("org.nd4j:nd4j-native-platform:1.0.0-M2.1")
-        } else {
-            compileOnly("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
-            compileOnly("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
-            compileOnly("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
-        }
-    } else {
-        if(cpuOnly) {
-            implementation("org.nd4j:nd4j-native-platform:1.0.0-M2.1")
-        } else {
-            implementation("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
-            implementation("org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
-            implementation("org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
-        }
+    cudaDependencies {
+        compileOnlyOrImplementationCuda(false, "org.nd4j:nd4j-native-platform:1.0.0-M2.1")
+        compileOnlyOrImplementationCuda(true, "org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1")
+        compileOnlyOrImplementationCuda(true,"org.bytedeco:cuda-platform-redist:11.6-8.3-1.5.7")
+        compileOnlyOrImplementationCuda(true,"org.nd4j:nd4j-cuda-11.6:1.0.0-M2.1:windows-x86_64")
     }
+
     implementation("org.slf4j:slf4j-simple:2.0.13")
     implementation(project(":AEPPredictor"))
     implementation(project(":AEPLanguage"))

@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
 
 
 import org.slf4j.Logger;
@@ -7,8 +7,6 @@ import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
 import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
-import pl.publicprojects.language.interpreter.data.types.VariableData;
-import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
@@ -20,9 +18,6 @@ import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class RegularPartClusterExample {

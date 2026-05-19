@@ -1,20 +1,23 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
 
-import org.nd4j.linalg.factory.Nd4j;
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
 import pl.publicprojects.language.interpreter.data.math.LanguageNumber;
-import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleVectorNumber;
+import pl.publicprojects.language.interpreter.data.math.number.numbers.DoubleNumber;
+import pl.publicprojects.language.interpreter.data.math.number.numbers.IntegerNumber;
 import pl.publicprojects.language.interpreter.data.types.VariableData;
+import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVariable;
 import pl.publicprojects.predictor.graph.TreeVertex;
 import pl.publicprojects.predictor.model.data.TotalDataContainer;
 import pl.publicprojects.predictor.model.data.container.StandardDataLineContainer;
-import pl.publicprojects.language.interpreter.data.types.variables.numeric.DoubleVectorVariable;
 import pl.publicprojects.predictor.model.data.container.ProxyDataLineContainer;
-import pl.publicprojects.predictor.model.data.container.total.DoubleVectorTotalDataContainer;
+import pl.publicprojects.predictor.model.data.container.VirtualDataLineContainer;
+import pl.publicprojects.predictor.model.data.container.total.VirtualTotalDataContainer;
+import pl.publicprojects.predictor.model.data.lang.DataPointer;
+import pl.publicprojects.predictor.model.data.lang.VirtualVariable;
 import pl.publicprojects.predictor.model.models.ExpressionStandardModel;
 import pl.publicprojects.predictor.model.models.PoolESModel;
-import pl.publicprojects.predictor.model.tester.tests.StandardVectorTest;
+import pl.publicprojects.predictor.model.tester.tests.StandardNumberTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,48 +25,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class VectorESClusterExample {
+public class VirtualGeneticDiabetesDBExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "Please download from https://www.kaggle.com/datasets/mathchi/diabetes-data-set";
 
     public static void main(String[] args) throws Exception {
 
-
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
-        TotalDataContainer totalDataContainer = new DoubleVectorTotalDataContainer(interpreter, 500);
+        DataPointer pointer = new DataPointer();
         /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
                 for(int nameId = 0; nameId < dataSize; nameId++) {
-                    DoubleVectorVariable variable = new DoubleVectorVariable(interpreter, nameId, new ArrayList<>());
+                    VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                     variable.execute();
                     list.add(variable);
                 }
                 return list;
             }
-
             @Override
             public VariableData createVariable(int nameId) throws IOException {
-                DoubleVectorVariable variable = new DoubleVectorVariable(interpreter, nameId, new ArrayList<>());
+                VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
             }
 
             @Override
             public LanguageNumber<?> standardize(LanguageNumber<?> var) {
-                return var.plus(new DoubleVectorNumber(Nd4j.zeros(500)));
+                return var.plus(new DoubleNumber(0));
             }
         };*/
-        PoolESModel poolESModel = new PoolESModel(
+        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
+        PoolESModel standardModel = new PoolESModel(
                 interpreter,
                 container,
                 totalDataContainer,
-                new StandardVectorTest(totalDataContainer, interpreter),
-                new StandardVectorTest(totalDataContainer, interpreter),
-                200,
-                10,
+                new StandardNumberTest(totalDataContainer, interpreter),
+                new StandardNumberTest(totalDataContainer, interpreter),
+                1000,
+                20,
                 false
         ) {
 
@@ -73,8 +75,9 @@ public class VectorESClusterExample {
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
+
                 try {
-                    if(grade > 0.1 && grade - this.max > 0.001 ) {
+                    if(grade > 0.1 && grade - this.max > 0.01) {
                         this.max = Math.max(this.max, grade);
                         container.getExpressionList().add(vertex.visit());
                         super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
@@ -93,32 +96,23 @@ public class VectorESClusterExample {
             public void loadData() throws Exception {
                 File file = new File(DEFAULT_SIMPLE_TEST_FILE);
                 Scanner scanner = new Scanner(file); // not optimal
-
-                List<Double> score = new ArrayList<>();
-                List<Double> xVal = new ArrayList<>();
-                List<Double> yVal = new ArrayList<>();
                 while(scanner.hasNextLine()) {
                     String[] lineArgs = scanner.nextLine().split(" ");
+                    LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 8];
 
-                    double x = Double.parseDouble(lineArgs[1]) / 10;
-                    double y = Double.parseDouble(lineArgs[2]) / 10;
-                    score.add((double)Integer.parseInt(lineArgs[0]));
-                    xVal.add(x);
-                    yVal.add(y);
+                    numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
+
+                    for(int i = 0; i <= 8; i++)
+                        numberTable[i] = new DoubleNumber(Double.parseDouble(lineArgs[i]));
+
+                    super.addData(new VirtualDataLineContainer(interpreter, numberTable, container, pointer));
+                    //super.getTotalDataContainer().getRawData().add(new VirtualDataLineContainer(numberTable, container, pointer));
                 }
-
-                LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 2];
-                numberTable[0] = new DoubleVectorNumber(score);
-                numberTable[1] = new DoubleVectorNumber(xVal);
-                numberTable[2] = new DoubleVectorNumber(yVal);
-
-                super.addData(new StandardDataLineContainer(this.getTotalDataContainer(), numberTable, container));
             }
         };
-        container.setVariables(poolESModel.getMainModel().getVariables());
-        poolESModel.loadData();
-        //poolESModel.setMainModelTreeLimit(1);
-        poolESModel.search();
+        container.setVariables(standardModel.getMainModel().getVariables());
+        standardModel.loadData();
+        standardModel.search();
 
     }
 }

@@ -1,4 +1,4 @@
-package pl.publicprojects.predictor.basic.examples;
+package pl.publicprojects.examples;
 
 import org.slf4j.Logger;
 import pl.publicprojects.language.interpreter.Interpreter;
@@ -24,17 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class VirtualPoolESClusterExample {
+public class VirtualMakeMoonExample {
 
-    public static String DEFAULT_SIMPLE_TEST_FILE = "datasets/result.txt";
+    public static String DEFAULT_SIMPLE_TEST_FILE = "C:/Users/akmen/Desktop/Modell/Fildereq/MakeMoons/output.txt";
 
     public static void main(String[] args) throws Exception {
 
         Interpreter interpreter = new Interpreter();
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
         DataPointer pointer = new DataPointer();
-
-        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
+        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
+        /*
+        TotalDataContainer totalDataContainer = new TotalDataContainer() {
             @Override
             public List<VariableData> createVariables(int dataSize) {
                 List<VariableData> list = new ArrayList<>();
@@ -47,7 +48,7 @@ public class VirtualPoolESClusterExample {
             }
 
             @Override
-            public VariableData createVariable(int nameId) {
+            public VariableData createVariable(int nameId) throws IOException {
                 VirtualVariable variable = new VirtualVariable(interpreter, nameId, pointer);
                 variable.execute();
                 return variable;
@@ -59,15 +60,14 @@ public class VirtualPoolESClusterExample {
             }
         };
         */
-        TotalDataContainer totalDataContainer = new VirtualTotalDataContainer(interpreter, pointer);
         PoolESModel poolESModel = new PoolESModel(
                 interpreter,
                 container,
                 totalDataContainer,
                 new StandardNumberTest(totalDataContainer, interpreter),
                 new StandardNumberTest(totalDataContainer, interpreter),
+                200,
                 100,
-                20,
                 false
         ) {
 
@@ -77,6 +77,7 @@ public class VirtualPoolESClusterExample {
             @Override
             public void foundResult(double grade, TreeVertex vertex) {
                 String code = vertex.toString();
+
                 try {
                     if(grade > 0.1 && grade - this.max > 0.001 ) {
                         this.max = Math.max(this.max, grade);
