@@ -29,30 +29,6 @@ public class RegularPartClusterExample {
 
         logger.info("Running...");
         Interpreter interpreter = new Interpreter();
-        /*TotalDataContainer totalDataContainer = new TotalDataContainer() {
-            @Override
-            public List<VariableData> createVariables(int dataSize) {
-                List<VariableData> list = new ArrayList<>();
-                for(int nameId = 0; nameId < dataSize; nameId++) {
-                    DoubleVariable variable = new DoubleVariable(interpreter, nameId);
-                    variable.execute();
-                    list.add(variable);
-                }
-                return list;
-            }
-            @Override
-            public VariableData createVariable(int nameId) throws IOException {
-                DoubleVariable variable = new DoubleVariable(interpreter, nameId);
-                variable.execute();
-                variable.setValue(new DoubleNumber(0));
-                return variable;
-            }
-
-            @Override
-            public LanguageNumber<?> standardize(LanguageNumber<?> var) {
-                return var.plus(new DoubleNumber(0));
-            }
-        };*/
         TotalDataContainer totalDataContainer = new DoubleTotalDataContainer(interpreter);
 
         ProxyDataLineContainer container = new ProxyDataLineContainer(interpreter);
@@ -69,7 +45,6 @@ public class RegularPartClusterExample {
             public void foundResult(double grade, TreeVertex vertex) {
                 this.logger.info("Founded...");
                 String code = vertex.toString();
-
                 try {
                     container.getExpressionList().add(vertex.visit());
                     super.getGenerator().setVariablesAmount(super.getGenerator().getVariablesAmount() + 1);
@@ -92,11 +67,10 @@ public class RegularPartClusterExample {
                     String[] lineArgs = scanner.nextLine().split(" ");
                     LanguageNumber<?>[] numberTable = new LanguageNumber<?>[1 + 2];
 
-                    double x = Double.parseDouble(lineArgs[1]) / 10;
-                    double y = Double.parseDouble(lineArgs[2]) / 10;
                     numberTable[0] = new IntegerNumber(Integer.parseInt(lineArgs[0]));
-                    numberTable[1] = new DoubleNumber(x);
-                    numberTable[2] = new DoubleNumber(y);
+
+                    for(int i = 1; i <= 2; i++)
+                        numberTable[i] = new DoubleNumber(Double.parseDouble(lineArgs[i]) / 10);
 
                     super.getRawData().add(new StandardDataLineContainer(totalDataContainer, numberTable, container));
                 }
