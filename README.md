@@ -1,4 +1,5 @@
-# AEP ![Last Commit](https://img.shields.io/github/last-commit/adammenkiel/AEP?style=for-the-badge) ![Activity](https://img.shields.io/github/commit-activity/m/adammenkiel/AEP?style=for-the-badge)
+# AEP 
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white) ![Last Commit](https://img.shields.io/github/last-commit/adammenkiel/AEP?style=for-the-badge) ![Activity](https://img.shields.io/github/commit-activity/m/adammenkiel/AEP?style=for-the-badge)
 
 ## Table of Contents
 - [Introduction](#introduction)
