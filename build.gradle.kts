@@ -5,7 +5,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
-group = "org.example"
+group = "pl.publicprojects.aep"
 version = "1.0-SNAPSHOT"
 
 repositories {

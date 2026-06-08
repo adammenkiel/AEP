@@ -3,7 +3,7 @@ plugins {
     id("pl.publicprojects.ktsplugin")
 }
 
-group = "org.example"
+group = "pl.publicprojects.aeplanguage"
 version = "1.0-SNAPSHOT"
 
 repositories {
